@@ -19,21 +19,6 @@
      | Symbol of string
      | EOF
 
-   (* helper functions *)
-   fun decodeInt lexbuf 
-     = let val s = getLexeme lexbuf 
-       in case Int.fromString s of 
-              NONE   => lexerError lexbuf ( s ^ ": not an int.")
-            | SOME n => n
-       end
-
-   fun decodeFloat lexbuf
-     = let val s = getLexeme lexbuf 
-       in case Real.fromString s of 
-              NONE   => lexerError lexbuf ( s ^ ": not a float.")
-            | SOME x => x
-       end
-
    (* octal and hex need more involved helper functions *)
 
    fun value (c : char) : int (* return digit value, assume correct input *)
@@ -42,11 +27,6 @@
           else if v >= 65 andalso v <= 70 (* A - F *) then v - 55
           else if v >= 97 andalso v <= 102 (* a - f *) then v - 87
           else raise LexicalError ("Illegal digit in conversion", 0)
-       end
-
-   fun decodeInBase (base : int) (s : string) : int
-     = let fun acc ( c : char, acc : int) : int = acc*base + value c
-       in List.foldl acc 0 (String.explode s)
        end
 
    (* "lex" will later be the generated function "Token" *)
@@ -81,25 +61,11 @@ rule Token = parse
     [` ` `\t` `\n` `\r`]       (* ignore white space (make a recursive call) *)
                                { Token lexbuf }
 
-  | `0` | nonzero digit*       { Decimal (decodeInt lexbuf) }
-  | `0`[`0`-`7`]+              { Octal (decodeInBase 8 (getLexeme lexbuf)) }
-
-  | `0` (`x`|`X`)              (* call a different scanner (start code) *)
-                               { hexToken lexbuf }
-
-  | `+` | `-` | `*` | `/`      { Symbol (getLexeme lexbuf) }
-
-  | digit* `.` digit+ | digit+ `.`
-                               { Float (decodeFloat lexbuf) }
-
-  | (digit* `.` digit+ | digit+ `.`?) (`e`|`E`) (`+`|`-`)? digit+
-                               { Scientific (decodeFloat lexbuf) }
-
+  | `a``b`*                 { Symbol (getLexeme lexbuf) }
+  | `a`*`b`                 { Symbol (getLexeme lexbuf) }
+  | (`a``b`)*`c`            { Symbol (getLexeme lexbuf) }
+  
   | eof                        { EOF }
-  | _ { lexerError lexbuf ("Lexical error at input `"^getLexeme lexbuf^ "`") }
+  | _ { lexerError lexbuf ("Lexical error at input `"^getLexeme lexbuf^ "`") };
 
-and hexToken = parse 
-    (digit | [`A`-`F``a`-`f`])+ { Hex (decodeInBase 16 (getLexeme lexbuf))  }
-  | _  {lexerError lexbuf ("Hex digit expected, found " ^ getLexeme lexbuf) }
-;
 (* Do not forget this semicolon. Noone will tell you where the error is *)
