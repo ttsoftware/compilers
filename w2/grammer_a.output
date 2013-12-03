@@ -1,0 +1,117 @@
+   0  $accept : %entry% $end
+
+   1  Start : A B EOF
+
+   2  A : CharA A
+   3    | CharA A CharB
+   4    |
+
+   5  B : CharB B
+   6    |
+
+   7  %entry% : '\001' Start
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . Start  (7)
+	A : .  (4)
+
+	CharA  shift 3
+	CharB  reduce 4
+	EOF  reduce 4
+
+	Start  goto 4
+	A  goto 5
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	A : CharA . A  (2)
+	A : CharA . A CharB  (3)
+	A : .  (4)
+
+	CharA  shift 3
+	CharB  reduce 4
+	EOF  reduce 4
+
+	A  goto 6
+
+
+state 4
+	%entry% : '\001' Start .  (7)
+
+	.  reduce 7
+
+
+state 5
+	Start : A . B EOF  (1)
+	B : .  (6)
+
+	CharB  shift 7
+	EOF  reduce 6
+
+	B  goto 8
+
+
+6: shift/reduce conflict (shift 9, reduce 2) on CharB
+state 6
+	A : CharA A .  (2)
+	A : CharA A . CharB  (3)
+
+	CharB  shift 9
+	EOF  reduce 2
+
+
+state 7
+	B : CharB . B  (5)
+	B : .  (6)
+
+	CharB  shift 7
+	EOF  reduce 6
+
+	B  goto 10
+
+
+state 8
+	Start : A B . EOF  (1)
+
+	EOF  shift 11
+	.  error
+
+
+state 9
+	A : CharA A CharB .  (3)
+
+	.  reduce 3
+
+
+state 10
+	B : CharB B .  (5)
+
+	.  reduce 5
+
+
+state 11
+	Start : A B EOF .  (1)
+
+	.  reduce 1
+
+
+State 6 contains 1 shift/reduce conflict.
+
+
+6 terminals, 5 nonterminals
+8 grammar rules, 12 states
