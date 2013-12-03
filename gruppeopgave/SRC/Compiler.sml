@@ -200,6 +200,14 @@ struct
             val c2 = compileExp(vtable, e2, t2)
         in c1 @ c2 @ [Mips.SUB (place,t1,t2)]
         end
+        
+    | compileExp( vtable, Times (e1, e2, _), place ) =
+        let val t1 = "times1_" ^ newName()
+            val c1 = compileExp(vtable, e1, t1)
+            val t2 = "times2_" ^ newName()
+            val c2 = compileExp(vtable, e2, t2)
+        in c1 @ c2 @ [Mips.MUL (place,t1,t2)]
+        end
 
     (* Task 2: Some code-generation of operators should occur here. *)
 (*

@@ -41,13 +41,13 @@ struct
     | LValue  of LVAL              * Pos
     | Plus    of Exp * Exp         * Pos      (* e.g., x + 3 *)
     | Minus   of Exp * Exp         * Pos      (* e.g., x - 3 *)
- (* | Times   of Exp * Exp         * Pos      (* e.g., x * 3 *)
-    | Div     of Exp * Exp         * Pos      (* e.g., x / 3 *)         *)
+    | Times   of Exp * Exp         * Pos      (* e.g., x * 3 *)
+ (*   | Div     of Exp * Exp         * Pos      (* e.g., x / 3 *)   *)     
     | Equal   of Exp * Exp         * Pos      (* e.g., x = 3 *)
     | Less    of Exp * Exp         * Pos      (* e.g., a < b *)
     | And     of Exp * Exp         * Pos      (* e.g., (x<1) and y *)
- (* | Or      of Exp * Exp         * Pos      (* e.g., (x=5) or y *)
-    | Not     of Exp               * Pos      (* e.g., not (x>3) *)      *)
+(*    | Or      of Exp * Exp         * Pos      (* e.g., (x=5) or y *)
+    | Not     of Exp               * Pos      (* e.g., not (x>3) *)     *)
     | FunApp  of FIdent * Exp list * Pos      (* e.g., f(1, 3+x) *)
     | Map     of FIdent * Exp      * Pos      (* map(f,    {a1, ..., an}) == { f(a1), ..., f(an) }   *)
 
@@ -173,7 +173,8 @@ struct
     | pp_exp (Equal (e1, e2, _))    = "( " ^ pp_exp e1 ^ " = " ^ pp_exp e2 ^ " )"
     | pp_exp (Less  (e1, e2, _))    = "( " ^ pp_exp e1 ^ " < " ^ pp_exp e2 ^ " )"
     | pp_exp (And   (e1, e2, _))    = "( " ^ pp_exp e1 ^ " & " ^ pp_exp e2 ^ " )"
-
+    | pp_exp (Times (e1, e2, _))    = "( " ^ pp_exp e1 ^ " * " ^ pp_exp e2 ^ " )"
+    
     | pp_exp (FunApp ((nm,_), args, _)) = nm ^ "( " ^ pp_exps args ^ " )"
     | pp_exp (Map    ((nm,_), arr , _)) = "map ( " ^ nm ^ ", " ^ pp_exp arr ^ " ) "
 
@@ -337,6 +338,7 @@ struct
     | typeOfExp ( Equal  (_,_,_) ) = BType Bool
     | typeOfExp ( Less   (_,_,_) ) = BType Bool
     | typeOfExp ( And    (_,_,_) ) = BType Bool
+    | typeOfExp ( Times  (a,b,_) ) = typeOfExp a
 
     | typeOfExp ( LValue (Var    (_,t)      , _) ) = t
     | typeOfExp ( LValue (Index ((v,t),inds), p) ) =
@@ -390,6 +392,7 @@ struct
     | posOfExp  ( And    (_,_,p) ) = p
     | posOfExp  ( FunApp (_,_,p) ) = p
     | posOfExp  ( Map    (_,_,p) ) = p
+    | posOfExp  ( Times  (_,_,p) ) = p
 
   (*  posOfStmt ( s : Stmt ) : Pos *)
   fun posOfStmt ( Return (_,  p) ) = p

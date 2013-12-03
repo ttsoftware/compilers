@@ -466,6 +466,11 @@ and evalExp ( Literal(lit,_), vtab, ftab ) = lit
             val res2   = evalExp(e2, vtab, ftab)
         in  evalBinop(op -, res1, res2, pos)
         end
+  | evalExp ( Times(e1, e2, pos), vtab, ftab ) =
+        let val res1   = evalExp(e1, vtab, ftab)
+            val res2   = evalExp(e2, vtab, ftab)
+        in  evalBinop(op -, res1, res2, pos)
+        end
 
     (* Task 2: Some evaluation of operators should occur here. *)
 (*

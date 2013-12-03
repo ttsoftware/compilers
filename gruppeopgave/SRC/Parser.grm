@@ -1,4 +1,4 @@
-%{
+%{ 
    (* See the Moscow ML manual for the syntax and structure. Roughly:
 
     `%``{`
@@ -25,7 +25,7 @@
        the code ends up _after_ the data declaration. *)
 
     (* parse exception *)
-    exception ParseErr of string * pos
+    exception ParseError of string
 %}
 
 /* Token type definitions (will often be used in the Lexer) */
@@ -37,21 +37,31 @@
 /* tokens skal være sml-typer
    gennem reglerne skal de omdannes til et absyn syntakstræ*/
 
-%token <pos> TProgram TFunction TProcedure TVar TBegin TEnd TIf TThen TElse TWhile TDo TReturn TArray TOf TIng TBool TChar TAnd TOr TNot TAssign TPlus TMinus TTimes TSlash TEq TLess TLParen TRParen TLBracket TRBracket TLCurly TRCurly TComma TSemi TColon TEOF
-%token <bool*pos> TBLit
-%token <int*pos> TNLit
-%token <char*pos> TCLit
-%token <string*pos> TSLit TId
+%token <AbSyn.Pos> TProgram TFunction TProcedure TVar TBegin TEnd TIf TThen TElse TWhile TDo TReturn TArray TOf TInt TBool TChar TAnd TOr TNot TAssign TPlus TMinus TTimes TSlash TEq TLess TLParen TRParen TLBracket TRBracket TLCurly TRCurly TComma TSemi TColon TEOF
+%token <bool*AbSyn.Pos> TBLit
+%token <int*AbSyn.Pos> TNLit
+%token <char*AbSyn.Pos> TCLit
+%token <string*AbSyn.Pos> TSLit TId
+
+%nonassoc LowPrec
+%nonassoc TElse
+%right TOr
+%right TAnd
+%nonassoc TNot
+%nonassoc TEq TLess
+%left TPlus TMinus
+%left TTimes TSlash
 
 /* start symbol */
-%start Prog
+%start Program
 
 /* types returned by rules below */
-%type <AbSyn.Ident*AbSyn.Prog> Prog
+%type <AbSyn.Prog> Program
+%type <AbSyn.Prog> Prog
 %type <AbSyn.Prog> FunDecs
 %type <AbSyn.FunDec> FunDec
 %type <AbSyn.StmtBlock> Block 
-%type <AbSyn.Dec list> DBlock 
+/* %type <AbSyn.Dec list> DBlock */
 %type <AbSyn.Stmt list> SBlock
 %type <AbSyn.Stmt list> StmtSeq
 %type <AbSyn.Stmt> Stmt
@@ -75,8 +85,10 @@
 */
 
 /* PROGRAM STRUCTURE*/
+Program: Prog TEOF                             { $1 } 
+;
 Prog : 
-    TProgram TId TSemi FunDecs                 { (AbSyn.Ident $2, $4) }
+    TProgram TId TSemi FunDecs                 { $4 }
 ;
 FunDecs :
     FunDecs FunDec                             { $1 @ [$2] }
@@ -84,17 +96,18 @@ FunDecs :
 ;
 FunDec :
     TFunction TId TLParen PDecl TRParen TColon Type Block TSemi
-        { AbSyn.Func($7, $2, $4, $8, AbSyn.Pos($1)) }
-  | TProcedure TId TlParen PDecl TrParen Block TSemi
-        { AbSyn.Proc($2, $4, $8, AbSyn.Pos($1)) }
+        { AbSyn.Func($7, #1 $2, $4, $8, $1) }
+  | TProcedure TId TLParen PDecl TRParen Block TSemi
+        { AbSyn.Proc(#1 $2, $4, $6, $1) }
 ;
 Block :
-    DBlock SBlock {AbSyn.Block ($1, $2)}
+    SBlock              { AbSyn.Block ([], $1) }
+  | TVar Decs SBlock    { AbSyn.Block ($2, $3) }
 ;
-DBlock :
+/* DBlock :
     TVar Decs                                  { $2 }
   |                                            { [] }
-;
+; */
 SBlock :
     TBegin StmtSeq TSemi TEnd                  { $2 }
   | Stmt                                       { [$1] }
@@ -106,41 +119,42 @@ StmtSeq :
 
 /* STATEMENTS */
 Stmt :
-    TId TLParen CallParams TRParen             { AbSyn.ProcCall ($1, $3) }
-  | TIf Exp TThen Block TElse Block            { AbSyn.IfThEl ($2, $4, $6) }
-/*| TIf Exp TThen Block         */
-  | TWhile Exp TDo Block                       { AbSyn.While ($2, $4) }
-  | TReturn Ret                                { AbSyn.Return ($2) }
-  | LVal TAssign Exp                           { AbSyn.Assign ($1, $3) }
+    TId TLParen CallParams TRParen         { AbSyn.ProcCall (#1 $1, $3, #2 $1) }
+  | TIf Exp TThen Block TElse Block            { AbSyn.IfThEl ($2, $4, $6, $1) }
+  | TIf Exp TThen Block %prec LowPrec { AbSyn.IfThEl ($2, $4, AbSyn.Block([],[]), $1)}
+  /* prec gives precedence as LowPrec */
+  | TWhile Exp TDo Block                       { AbSyn.While ($2, $4, $1) }
+  | TReturn Ret                                { AbSyn.Return ($2, $1) }
+  | LVal TAssign Exp                        { AbSyn.Assign ($1, $3, $2) }
 ;
 
 /* L-VALUES AND EXPRESSIONS */
 LVal :
-    TId                                        { AbSyn.Var ($1) }
-  | TId TLBracket Exps TRBracket               { AbSyn.Index ($1, $3) }
+    TId                                        { AbSyn.Var (#1 $1) }
+  | TId TLBracket Exps TRBracket               { AbSyn.Index (#1 $1, $3) }
 ;
 Ret :
-    Exp                                        { AbSyn.Return (SOME $1) }
-  |                                            { AbSyn.Return (NONE) }
+    Exp                                        { SOME $1 }
+  |                                            { NONE }
 ;
 Exp :
-    TNLit                                      { AbSyn.Literal ($1) }
-  | TBLit                                      { AbSyn.Literal ($1) }
-  | TCLit                                      { AbSyn.Literal ($1) } 
-  | TSLit                                      { AbSyn.StrLit  ($1) }
-  | TLCurly Exps TRCurly                       { AbSyn.ArrLit  ($2) }
-  | LVal                                       { AbSyn.LValue  ($1) }
-  | TNot Exp                                   { AbSyn.Not     ($2) }
-  | Exp TPlus Exp                              { AbSyn.Plus ($1, $3) }
-  | Exp TMinus Exp                             { AbSyn.Minus ($1, $3) }
-  | Exp TTimes Exp                             { AbSyn.Times ($1, $3) }
-  | Exp TSlash Exp                             { AbSyn.Div ($1, $3) }
-  | Exp TEq Exp                                { AbSyn.Equal ($1, $3) }
-  | Exp TLess Exp                              { AbSyn.Less ($1, $3) }
-  | Exp TAnd Exp                               { AbSyn.And ($1, $3) }
-  | Exp TOr Exp                                { AbSyn.Or ($1, $3) }
-  | TLParen Exp TRParen                        { $2                 }
-  | TId TLParen CallParams TRParen             { AbSyn.FunApp ($1, $3, $1) }
+    TNLit               { AbSyn.Literal (AbSyn.BVal(AbSyn.Num(#1 $1)), #2 $1) }
+  | TBLit               { AbSyn.Literal (AbSyn.BVal(AbSyn.Log(#1 $1)), #2 $1) }
+  | TCLit               { AbSyn.Literal (AbSyn.BVal(AbSyn.Chr(#1 $1)), #2 $1) } 
+  | TSLit                         { AbSyn.StrLit  (#1 $1, #2 $1) }
+  | TLCurly Exps TRCurly                       { AbSyn.ArrLit  ($2,$1) }
+  | LVal                                       { AbSyn.LValue  ($1, (0,0)) }
+  | TNot Exp                                   { AbSyn.Not     ($2, $1) }
+  | Exp TPlus Exp       { AbSyn.Plus ($1, $3, $2) }
+  | Exp TMinus Exp      { AbSyn.Minus ($1, $3, $2) }
+  | Exp TTimes Exp      { AbSyn.Times ($1, $3, $2) }
+  | Exp TSlash Exp      { AbSyn.Div ($1, $3, $2) }
+  | Exp TEq Exp         { AbSyn.Equal ($1, $3, $2) }
+  | Exp TLess Exp       { AbSyn.Less ($1, $3, $2) }
+  | Exp TAnd Exp        { AbSyn.And ($1, $3, $2) }
+  | Exp TOr Exp         { AbSyn.Or ($1, $3, $2) }
+  | TLParen Exp TRParen                        { $2 }
+  | TId TLParen CallParams TRParen           { AbSyn.FunApp (#1 $1, $3, # 2$1) }
 ;
 
 /* VARIABLE AND PARAMETER DECLARATIONS, TYPES */
@@ -153,17 +167,17 @@ Params :
   | Dec                                        { [$1] }
 ;
 Dec :
-    TId TColon Type                            { AbSyn.Dec ($1, $3, $1.) }
+    TId TColon Type                            { AbSyn.Dec (#1 $1, $3, #2 $1) }
 ;
 Decs :
     Decs Dec TSemi                             { $1 @ [$2] }
-  | Dec                                        { [$1] }
+  | Dec TSemi                                  { [$1] }
 ;
 Type :
     TInt                                       { AbSyn.Int ($1) }
   | TChar                                      { AbSyn.Char ($1) }
   | TBool                                      { AbSyn.Bool ($1) }
-  | TArray TOf Type                            { AbSyn.Array ($3, $1) }
+  | TArray TOf Type                            { AbSyn.Array ($3,$1) }
 ;
 
 /* FUNCTION AND PROCEDURE PARAMETERS AND INDEX LISTS */
@@ -172,7 +186,7 @@ CallParams :
   |                                            { [] }
 ;
 Exps :
-    Exp TComma Exps                            { $1 :: $2 }
+    Exp TComma Exps                            { $1 :: $3 }
   | Exp                                        { [$1] }
 
 %%

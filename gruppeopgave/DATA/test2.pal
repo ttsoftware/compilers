@@ -1,0 +1,18 @@
+program test2;
+
+procedure main()
+var n : int;
+    m : int;
+    d : int;
+    o : int;
+    v : int;
+    p : int;
+begin
+    n := 1;
+    m := 2;
+    d := 3;
+    o := 4;
+    v := (4+m)*6100;
+    p := 1*3*2+1;
+    write(p);
+end;

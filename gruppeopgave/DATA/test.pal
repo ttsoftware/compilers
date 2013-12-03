@@ -1,0 +1,23 @@
+program test;
+
+procedure main()
+var n : int;
+    m : int;
+    d : int;
+    o : int;
+begin
+    n := 1;
+    m := 2;
+    d := 3;
+    o := 4;
+    if n = 1 then
+        if m = 3 then
+            write("Den var sand")
+        else write ("Dette skal skrives!")
+    else 
+        if m = 2 then
+            write("m var 2")
+        else
+            write("Den var falsk");
+    end;
+        
