@@ -61,7 +61,6 @@
 %type <AbSyn.Prog> FunDecs
 %type <AbSyn.FunDec> FunDec
 %type <AbSyn.StmtBlock> Block 
-/* %type <AbSyn.Dec list> DBlock */
 %type <AbSyn.Stmt list> SBlock
 %type <AbSyn.Stmt list> StmtSeq
 %type <AbSyn.Stmt> Stmt
@@ -104,10 +103,6 @@ Block :
     SBlock              { AbSyn.Block ([], $1) }
   | TVar Decs SBlock    { AbSyn.Block ($2, $3) }
 ;
-/* DBlock :
-    TVar Decs                                  { $2 }
-  |                                            { [] }
-; */
 SBlock :
     TBegin StmtSeq TSemi TEnd                  { $2 }
   | Stmt                                       { [$1] }
