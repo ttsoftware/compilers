@@ -1,36 +1,16 @@
 	.text	0x00400000
 	.globl	main
 	la	$28, _heap_
-	la	$4, Denvarf_43_
-# was:	la	Denvarf_43__addr, Denvarf_43_
-	ori	$3, $0, 13
-# was:	ori	Denvarf_43__init, 0, 13
+	la	$4, Ifthene_27_
+# was:	la	Ifthene_27__addr, Ifthene_27_
+	ori	$3, $0, 22
+# was:	ori	Ifthene_27__init, 0, 22
 	sw	$3, 0($4)
-# was:	sw	Denvarf_43__init, 0(Denvarf_43__addr)
+# was:	sw	Ifthene_27__init, 0(Ifthene_27__addr)
 	addi	$3, $4, 8
-# was:	addi	Denvarf_43__init, Denvarf_43__addr, 8
+# was:	addi	Ifthene_27__init, Ifthene_27__addr, 8
 	sw	$3, 4($4)
-# was:	sw	Denvarf_43__init, 4(Denvarf_43__addr)
-	la	$4, mvar2___38_
-# was:	la	mvar2___38__addr, mvar2___38_
-	ori	$3, $0, 7
-# was:	ori	mvar2___38__init, 0, 7
-	sw	$3, 0($4)
-# was:	sw	mvar2___38__init, 0(mvar2___38__addr)
-	addi	$3, $4, 8
-# was:	addi	mvar2___38__init, mvar2___38__addr, 8
-	sw	$3, 4($4)
-# was:	sw	mvar2___38__init, 4(mvar2___38__addr)
-	la	$4, Dettesk_27_
-# was:	la	Dettesk_27__addr, Dettesk_27_
-	ori	$3, $0, 19
-# was:	ori	Dettesk_27__init, 0, 19
-	sw	$3, 0($4)
-# was:	sw	Dettesk_27__init, 0(Dettesk_27__addr)
-	addi	$3, $4, 8
-# was:	addi	Dettesk_27__init, Dettesk_27__addr, 8
-	sw	$3, 4($4)
-# was:	sw	Dettesk_27__init, 4(Dettesk_27__addr)
+# was:	sw	Ifthene_27__init, 4(Ifthene_27__addr)
 	la	$3, Denvars_22_
 # was:	la	Denvars_22__addr, Denvars_22_
 	ori	$4, $0, 12
@@ -51,35 +31,33 @@ main:
 	addi	$29, $29, -12
 	sw	$17, 4($29)
 	sw	$16, 0($29)
-	ori	$4, $0, 1
+	ori	$3, $0, 1
 # was:	ori	_assign__5_, 0, 1
 # 	ori	n_local__4_,_assign__5_,0
-	ori	$3, $0, 2
+	ori	$4, $0, 2
 # was:	ori	_assign__6_, 0, 2
 # 	ori	m_local__3_,_assign__6_,0
-	ori	$5, $0, 3
+	ori	$4, $0, 3
 # was:	ori	_assign__7_, 0, 3
 # 	ori	d_local__2_,_assign__7_,0
 	ori	$5, $0, 4
 # was:	ori	_assign__8_, 0, 4
 # 	ori	o_local__1_,_assign__8_,0
-	ori	$5, $4, 0
-# was:	ori	eq1__12_, n_local__4_, 0
-	ori	$4, $0, 1
+# 	ori	eq1__12_,n_local__4_,0
+	ori	$5, $0, 1
 # was:	ori	eq2__13_, 0, 1
 	ori	$6, $0, 1
 # was:	ori	_if__9_, 0, 1
-	beq	$5, $4, _equal__14_
+	beq	$3, $5, _equal__14_
 # was:	beq	eq1__12_, eq2__13_, _equal__14_
 	ori	$6, $0, 0
 # was:	ori	_if__9_, 0, 0
 _equal__14_:
 	beq	$6, $0, _else__10_
 # was:	beq	_if__9_, 0, _else__10_
-	ori	$4, $3, 0
-# was:	ori	eq1__18_, m_local__3_, 0
-	ori	$3, $0, 3
-# was:	ori	eq2__19_, 0, 3
+# 	ori	eq1__18_,d_local__2_,0
+	ori	$3, $0, 1
+# was:	ori	eq2__19_, 0, 1
 	ori	$5, $0, 1
 # was:	ori	_if__15_, 0, 1
 	beq	$4, $3, _equal__20_
@@ -111,9 +89,9 @@ _write_loop_beg_24_:
 _write_loop_end_25_:
 	j	_endif__17_
 _else__16_:
-	la	$16, Dettesk_27_
-# was:	la	_dat__26_, Dettesk_27_
-# Dettesk_27_: string "Dette skal skrives!"
+	la	$16, Ifthene_27_
+# was:	la	_dat__26_, Ifthene_27_
+# Ifthene_27_: string "If-then-else virker!!!"
 	lw	$17, 0($16)
 # was:	lw	_arr_end__28_, 0(_dat__26_)
 	lw	$16, 4($16)
@@ -134,62 +112,6 @@ _write_loop_end_30_:
 _endif__17_:
 	j	_endif__11_
 _else__10_:
-	ori	$4, $3, 0
-# was:	ori	eq1__34_, m_local__3_, 0
-	ori	$3, $0, 2
-# was:	ori	eq2__35_, 0, 2
-	ori	$5, $0, 1
-# was:	ori	_if__31_, 0, 1
-	beq	$4, $3, _equal__36_
-# was:	beq	eq1__34_, eq2__35_, _equal__36_
-	ori	$5, $0, 0
-# was:	ori	_if__31_, 0, 0
-_equal__36_:
-	beq	$5, $0, _else__32_
-# was:	beq	_if__31_, 0, _else__32_
-	la	$16, mvar2___38_
-# was:	la	_dat__37_, mvar2___38_
-# mvar2___38_: string "m var 2"
-	lw	$17, 0($16)
-# was:	lw	_arr_end__39_, 0(_dat__37_)
-	lw	$16, 4($16)
-# was:	lw	_dat__37_, 4(_dat__37_)
-	add	$17, $17, $16
-# was:	add	_arr_end__39_, _arr_end__39_, _dat__37_
-_write_loop_beg_40_:
-	beq	$16, $17, _write_loop_end_41_
-# was:	beq	_dat__37_, _arr_end__39_, _write_loop_end_41_
-	lb	$2, 0($16)
-# was:	lb	2, 0(_dat__37_)
-	jal	writeChar
-# was:	jal	writeChar, 2
-	addi	$16, $16, 1
-# was:	addi	_dat__37_, _dat__37_, 1
-	j	_write_loop_beg_40_
-_write_loop_end_41_:
-	j	_endif__33_
-_else__32_:
-	la	$16, Denvarf_43_
-# was:	la	_dat__42_, Denvarf_43_
-# Denvarf_43_: string "Den var falsk"
-	lw	$17, 0($16)
-# was:	lw	_arr_end__44_, 0(_dat__42_)
-	lw	$16, 4($16)
-# was:	lw	_dat__42_, 4(_dat__42_)
-	add	$17, $17, $16
-# was:	add	_arr_end__44_, _arr_end__44_, _dat__42_
-_write_loop_beg_45_:
-	beq	$16, $17, _write_loop_end_46_
-# was:	beq	_dat__42_, _arr_end__44_, _write_loop_end_46_
-	lb	$2, 0($16)
-# was:	lb	2, 0(_dat__42_)
-	jal	writeChar
-# was:	jal	writeChar, 2
-	addi	$16, $16, 1
-# was:	addi	_dat__42_, _dat__42_, 1
-	j	_write_loop_beg_45_
-_write_loop_end_46_:
-_endif__33_:
 _endif__11_:
 main_exit:
 	lw	$17, 4($29)
@@ -281,17 +203,9 @@ _IllegalArrIndexString_:
 	.asciiz	"Error: Array index out of bounds at line "
 # String Literals
 	.align	2
-Denvarf_43_:
+Ifthene_27_:
 	.space	8
-	.ascii	"Den var falsk"
-	.align	2
-mvar2___38_:
-	.space	8
-	.ascii	"m var 2"
-	.align	2
-Dettesk_27_:
-	.space	8
-	.ascii	"Dette skal skrives!"
+	.ascii	"If-then-else virker!!!"
 	.align	2
 Denvars_22_:
 	.space	8

@@ -1,18 +1,23 @@
 program test2;
 
-procedure main()
-var n : int;
-    m : int;
-    d : int;
+function test() : bool
+var m : int;
     o : int;
     v : int;
     p : int;
 begin
-    n := 1;
     m := 2;
-    d := 3;
-    o := 4;
+    o := 3;
     v := (4+m)*6100;
-    p := 1*3*2+1;
-    write(p);
+    p := 1+1*o*2;
+    return v = 36600 and p = 7;
 end;
+
+procedure main()
+begin
+    if test() then 
+        write("det virker jo") 
+    else 
+        write("fail");
+end;
+    

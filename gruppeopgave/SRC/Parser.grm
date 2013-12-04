@@ -1,31 +1,5 @@
 %{ 
-   (* See the Moscow ML manual for the syntax and structure. Roughly:
-
-    `%``{`
-         header (* with ML-like comments *)
-    `%``}`
-        declarations  /* with c-like comments */
-    `%``%`
-        rules         /* with c-like comments */
-    `%``%`
-        trailer (* with ML-like comments *)
-    EOF
-
-    The (optional) header and trailer contain ML code to include in the
-    generated file (after the data declaration and at the end).
-
-    Compiling this file with:
-        $ mosmlyac -v G_AB.grm
-    will generate the code in "G_AB.sig" and "G_AB.sml" files, and a
-    file "G_AB.output" which describes the generated LR(0) automaton.
-    *)
-
-    type pos = int*int (* position in string *)
-    (* Unfortunately, we cannot use this type in the declarations -
-       the code ends up _after_ the data declaration. *)
-
-    (* parse exception *)
-    exception ParseError of string
+   
 %}
 
 /* Token type definitions (will often be used in the Lexer) */
@@ -193,12 +167,4 @@ Exps :
 
 %%
 
-(* SML trailer
-
- At this point we can use the parse function (%start above), whose type is
-   Start : (Lexing.lexbuf -> token) -> Lexing.lexbuf -> Exp;
-
-  (Lexing.lexbuf -> token) is usually mosmllex-generated, but a simple hack
-  here.
-
-*)
+(* SML trailer *)

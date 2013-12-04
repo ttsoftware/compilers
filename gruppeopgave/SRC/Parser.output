@@ -452,74 +452,14 @@ state 41
 state 42
 	SBlock : Stmt .  (10)
 
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
 	.  reduce 10
-=======
-	.  reduce 10
-=======
-	.  reduce 10
->>>>>>> External Changes
-=======
-	.  reduce 10
->>>>>>> External Changes
-=======
-	.  reduce 10
->>>>>>> External Changes
-=======
-	.  reduce 10
->>>>>>> External Changes
 
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
->>>>>>> External Changes
-=======
->>>>>>> External Changes
-=======
->>>>>>> External Changes
-=======
->>>>>>> External Changes
-=======
->>>>>>> External Changes
 
 state 43
 	Stmt : LVal . TAssign Exp  (18)
 
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-state 43
-	Stmt : LVal . TAssign Exp  (18)
-
 	TAssign  shift 66
 	.  error
-=======
-	TAssign  shift 66
-	.  error
->>>>>>> External Changes
-=======
-	TAssign  shift 66
-	.  error
->>>>>>> External Changes
-=======
-	TAssign  shift 66
-	.  error
->>>>>>> External Changes
-=======
-	TAssign  shift 66
-	.  error
->>>>>>> External Changes
-=======
-	TAssign  shift 66
-	.  error
->>>>>>> External Changes
 
 
 state 44
@@ -535,47 +475,8 @@ state 44
 
 
 state 45
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	FunDec : TFunction TId TLParen PDecl TRParen TColon Type . Block TSemi  (5)
-=======
-	FunDec : TFunction TId TLParen PDecl TRParen TColon Type . Block TSemi  (5)
-=======
-	FunDec : TFunction TId TLParen PDecl TRParen TColon Type . Block TSemi  (5)
-=======
 	FunDec : TFunction TId TLParen PDecl TRParen TColon Type . Block TSemi  (5)
 
-	TBegin  shift 34
-	TId  shift 35
-	TIf  shift 36
-	TReturn  shift 37
-	TVar  shift 38
-	TWhile  shift 39
-	.  error
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	TBegin  shift 34
-	TId  shift 35
-	TIf  shift 36
-	TReturn  shift 37
-	TVar  shift 38
-	TWhile  shift 39
-	.  error
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	TBegin  shift 34
-	TId  shift 35
-	TIf  shift 36
-	TReturn  shift 37
-	TVar  shift 38
-	TWhile  shift 39
-	.  error
->>>>>>> External Changes
-
-<<<<<<< Local Changes
 	TBegin  shift 34
 	TId  shift 35
 	TIf  shift 36
@@ -588,24 +489,6 @@ state 45
 	SBlock  goto 41
 	Stmt  goto 42
 	LVal  goto 43
-=======
-	Block  goto 68
-	SBlock  goto 41
-	Stmt  goto 42
-	LVal  goto 43
->>>>>>> External Changes
-=======
-	Block  goto 68
-	SBlock  goto 41
-	Stmt  goto 42
-	LVal  goto 43
->>>>>>> External Changes
-=======
-	Block  goto 68
-	SBlock  goto 41
-	Stmt  goto 42
-	LVal  goto 43
->>>>>>> External Changes
 
 
 state 46
@@ -623,11 +506,6 @@ state 47
 
 
 state 48
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
 	LVal : TId TLBracket . Exps TRBracket  (20)
 
 	TBLit  shift 50
@@ -639,116 +517,13 @@ state 48
 	TNot  shift 56
 	TSLit  shift 57
 	.  error
-=======
-	LVal : TId TLBracket . Exps TRBracket  (20)
->>>>>>> External Changes
-=======
-	LVal : TId TLBracket . Exps TRBracket  (20)
 
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-<<<<<<< Local Changes
 	LVal  goto 58
 	Exp  goto 70
 	Exps  goto 71
-=======
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
-=======
-	LVal : TId TLBracket . Exps TRBracket  (20)
->>>>>>> External Changes
-=======
-	LVal : TId TLBracket . Exps TRBracket  (20)
-
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	LVal  goto 58
-	Exp  goto 70
-	Exps  goto 71
->>>>>>> External Changes
-=======
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
-=======
-	LVal : TId TLBracket . Exps TRBracket  (20)
-
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	LVal  goto 58
-	Exp  goto 70
-	Exps  goto 71
->>>>>>> External Changes
-=======
-	LVal  goto 58
-	Exp  goto 70
-	Exps  goto 71
->>>>>>> External Changes
-=======
-	LVal  goto 58
-	Exp  goto 70
-	Exps  goto 71
->>>>>>> External Changes
-=======
-	LVal  goto 58
-	Exp  goto 70
-	Exps  goto 71
->>>>>>> External Changes
 
 
 state 49
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	Stmt : TId TLParen . CallParams TRParen  (13)
-	CallParams : .  (52)
-=======
 	Stmt : TId TLParen . CallParams TRParen  (13)
 	CallParams : .  (52)
 
@@ -761,113 +536,11 @@ state 49
 	TNot  shift 56
 	TSLit  shift 57
 	TRParen  reduce 52
->>>>>>> External Changes
 
-<<<<<<< Local Changes
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	TRParen  reduce 52
-=======
-	Stmt : TId TLParen . CallParams TRParen  (13)
-	CallParams : .  (52)
->>>>>>> External Changes
-=======
-	Stmt : TId TLParen . CallParams TRParen  (13)
-	CallParams : .  (52)
-
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	TRParen  reduce 52
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-<<<<<<< Local Changes
 	LVal  goto 58
 	Exp  goto 70
 	CallParams  goto 72
 	Exps  goto 73
-=======
-	LVal  goto 58
-	Exp  goto 70
-	CallParams  goto 72
-	Exps  goto 73
->>>>>>> External Changes
-=======
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	TRParen  reduce 52
-=======
-	Stmt : TId TLParen . CallParams TRParen  (13)
-	CallParams : .  (52)
-
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	TRParen  reduce 52
->>>>>>> External Changes
-=======
-	Stmt : TId TLParen . CallParams TRParen  (13)
-	CallParams : .  (52)
-
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	TRParen  reduce 52
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	LVal  goto 58
-	Exp  goto 70
-	CallParams  goto 72
-	Exps  goto 73
->>>>>>> External Changes
-=======
-	LVal  goto 58
-	Exp  goto 70
-	CallParams  goto 72
-	Exps  goto 73
->>>>>>> External Changes
-=======
-	LVal  goto 58
-	Exp  goto 70
-	CallParams  goto 72
-	Exps  goto 73
->>>>>>> External Changes
-=======
-	LVal  goto 58
-	Exp  goto 70
-	CallParams  goto 72
-	Exps  goto 73
->>>>>>> External Changes
 
 
 state 50
@@ -883,16 +556,6 @@ state 51
 
 
 state 52
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	Decs : Dec TSemi .  (48)
-
-	.  reduce 48
-=======
 	LVal : TId .  (19)
 	LVal : TId . TLBracket Exps TRBracket  (20)
 	Exp : TId . TLParen CallParams TRParen  (39)
@@ -915,103 +578,6 @@ state 52
 	TSlash  reduce 19
 	TThen  reduce 19
 	TTimes  reduce 19
->>>>>>> External Changes
-=======
-	LVal : TId .  (19)
-	LVal : TId . TLBracket Exps TRBracket  (20)
-	Exp : TId . TLParen CallParams TRParen  (39)
-
-	TLBracket  shift 48
-	TLParen  shift 74
-	TAnd  reduce 19
-	TComma  reduce 19
-	TDo  reduce 19
-	TElse  reduce 19
-	TEq  reduce 19
-	TLess  reduce 19
-	TMinus  reduce 19
-	TOr  reduce 19
-	TPlus  reduce 19
-	TRBracket  reduce 19
-	TRCurly  reduce 19
-	TRParen  reduce 19
-	TSemi  reduce 19
-	TSlash  reduce 19
-	TThen  reduce 19
-	TTimes  reduce 19
->>>>>>> External Changes
-=======
-	LVal : TId .  (19)
-	LVal : TId . TLBracket Exps TRBracket  (20)
-	Exp : TId . TLParen CallParams TRParen  (39)
-
-	TLBracket  shift 48
-	TLParen  shift 74
-	TAnd  reduce 19
-	TComma  reduce 19
-	TDo  reduce 19
-	TElse  reduce 19
-	TEq  reduce 19
-	TLess  reduce 19
-	TMinus  reduce 19
-	TOr  reduce 19
-	TPlus  reduce 19
-	TRBracket  reduce 19
-	TRCurly  reduce 19
-	TRParen  reduce 19
-	TSemi  reduce 19
-	TSlash  reduce 19
-	TThen  reduce 19
-	TTimes  reduce 19
->>>>>>> External Changes
-=======
-	LVal : TId .  (19)
-	LVal : TId . TLBracket Exps TRBracket  (20)
-	Exp : TId . TLParen CallParams TRParen  (39)
-
-	TLBracket  shift 48
-	TLParen  shift 74
-	TAnd  reduce 19
-	TComma  reduce 19
-	TDo  reduce 19
-	TElse  reduce 19
-	TEq  reduce 19
-	TLess  reduce 19
-	TMinus  reduce 19
-	TOr  reduce 19
-	TPlus  reduce 19
-	TRBracket  reduce 19
-	TRCurly  reduce 19
-	TRParen  reduce 19
-	TSemi  reduce 19
-	TSlash  reduce 19
-	TThen  reduce 19
-	TTimes  reduce 19
->>>>>>> External Changes
-=======
-	LVal : TId .  (19)
-	LVal : TId . TLBracket Exps TRBracket  (20)
-	Exp : TId . TLParen CallParams TRParen  (39)
-
-	TLBracket  shift 48
-	TLParen  shift 74
-	TAnd  reduce 19
-	TComma  reduce 19
-	TDo  reduce 19
-	TElse  reduce 19
-	TEq  reduce 19
-	TLess  reduce 19
-	TMinus  reduce 19
-	TOr  reduce 19
-	TPlus  reduce 19
-	TRBracket  reduce 19
-	TRCurly  reduce 19
-	TRParen  reduce 19
-	TSemi  reduce 19
-	TSlash  reduce 19
-	TThen  reduce 19
-	TTimes  reduce 19
->>>>>>> External Changes
 
 
 state 53
@@ -1085,10 +651,6 @@ state 58
 
 
 state 59
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
 	Stmt : TIf Exp . TThen Block TElse Block  (14)
 	Stmt : TIf Exp . TThen Block  (15)
 	Exp : Exp . TPlus Exp  (30)
@@ -1111,144 +673,11 @@ state 59
 	TTimes  shift 86
 	.  error
 
-=======
-	Stmt : TIf Exp . TThen Block TElse Block  (14)
-	Stmt : TIf Exp . TThen Block  (15)
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
 
-	TAnd  shift 78
-	TEq  shift 79
-	TLess  shift 80
-	TMinus  shift 81
-	TOr  shift 82
-	TPlus  shift 83
-	TSlash  shift 84
-	TThen  shift 85
-	TTimes  shift 86
-	.  error
->>>>>>> External Changes
-=======
-	Stmt : TIf Exp . TThen Block TElse Block  (14)
-	Stmt : TIf Exp . TThen Block  (15)
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-
-	TAnd  shift 78
-	TEq  shift 79
-	TLess  shift 80
-	TMinus  shift 81
-	TOr  shift 82
-	TPlus  shift 83
-	TSlash  shift 84
-	TThen  shift 85
-	TTimes  shift 86
-	.  error
->>>>>>> External Changes
-=======
-	Stmt : TIf Exp . TThen Block TElse Block  (14)
-	Stmt : TIf Exp . TThen Block  (15)
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-
-	TAnd  shift 78
-	TEq  shift 79
-	TLess  shift 80
-	TMinus  shift 81
-	TOr  shift 82
-	TPlus  shift 83
-	TSlash  shift 84
-	TThen  shift 85
-	TTimes  shift 86
-	.  error
->>>>>>> External Changes
-=======
-	Stmt : TIf Exp . TThen Block TElse Block  (14)
-	Stmt : TIf Exp . TThen Block  (15)
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-
-	TAnd  shift 78
-	TEq  shift 79
-	TLess  shift 80
-	TMinus  shift 81
-	TOr  shift 82
-	TPlus  shift 83
-	TSlash  shift 84
-	TThen  shift 85
-	TTimes  shift 86
-	.  error
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-state 60
-	Stmt : TReturn Ret .  (17)
-=======
->>>>>>> External Changes
-=======
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	.  reduce 17
-=======
-state 60
-	Stmt : TReturn Ret .  (17)
-=======
-state 60
-	Stmt : TReturn Ret .  (17)
->>>>>>> External Changes
-=======
-state 60
-	Stmt : TReturn Ret .  (17)
->>>>>>> External Changes
-=======
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	.  reduce 17
->>>>>>> External Changes
-=======
-	.  reduce 17
->>>>>>> External Changes
-=======
-	.  reduce 17
->>>>>>> External Changes
-=======
 state 60
 	Stmt : TReturn Ret .  (17)
 
 	.  reduce 17
->>>>>>> External Changes
 
 
 state 61
@@ -1280,82 +709,11 @@ state 62
 	TSemi  shift 87
 	.  error
 
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-=======
-=======
->>>>>>> External Changes
-=======
->>>>>>> External Changes
-=======
 
 state 63
 	Block : TVar Decs . SBlock  (8)
 	Decs : Decs . Dec TSemi  (45)
->>>>>>> External Changes
 
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-state 63
-	Block : TVar Decs . SBlock  (8)
-	Decs : Decs . Dec TSemi  (45)
->>>>>>> External Changes
-=======
-state 63
-	Block : TVar Decs . SBlock  (8)
-	Decs : Decs . Dec TSemi  (45)
->>>>>>> External Changes
-=======
-state 63
-	Block : TVar Decs . SBlock  (8)
-	Decs : Decs . Dec TSemi  (45)
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-state 63
-	Block : TVar Decs . SBlock  (8)
-	Decs : Decs . Dec TSemi  (45)
-=======
-	TBegin  shift 34
-	TId  shift 88
-	TIf  shift 36
-	TReturn  shift 37
-	TWhile  shift 39
-	.  error
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	TBegin  shift 34
-	TId  shift 88
-	TIf  shift 36
-	TReturn  shift 37
-	TWhile  shift 39
-	.  error
-=======
-	TBegin  shift 34
-	TId  shift 88
-	TIf  shift 36
-	TReturn  shift 37
-	TWhile  shift 39
-	.  error
->>>>>>> External Changes
-
-	SBlock  goto 89
-	Stmt  goto 42
-	LVal  goto 43
-	Dec  goto 90
-=======
-	SBlock  goto 89
-	Stmt  goto 42
-	LVal  goto 43
-	Dec  goto 90
->>>>>>> External Changes
-=======
 	TBegin  shift 34
 	TId  shift 88
 	TIf  shift 36
@@ -1367,20 +725,6 @@ state 63
 	Stmt  goto 42
 	LVal  goto 43
 	Dec  goto 90
->>>>>>> External Changes
-=======
-	TBegin  shift 34
-	TId  shift 88
-	TIf  shift 36
-	TReturn  shift 37
-	TWhile  shift 39
-	.  error
-
-	SBlock  goto 89
-	Stmt  goto 42
-	LVal  goto 43
-	Dec  goto 90
->>>>>>> External Changes
 
 
 state 64
@@ -1413,41 +757,6 @@ state 65
 
 
 state 66
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	Stmt : LVal TAssign . Exp  (18)
-=======
-	Stmt : LVal TAssign . Exp  (18)
-
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
-
-	LVal  goto 58
-	Exp  goto 92
-=======
-	LVal  goto 58
-	Exp  goto 92
->>>>>>> External Changes
-=======
 	Stmt : LVal TAssign . Exp  (18)
 
 	TBLit  shift 50
@@ -1462,7 +771,6 @@ state 66
 
 	LVal  goto 58
 	Exp  goto 92
->>>>>>> External Changes
 
 
 state 67
@@ -1540,82 +848,9 @@ state 73
 
 
 state 74
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	SBlock : TBegin StmtSeq TSemi . TEnd  (10)
-	StmtSeq : StmtSeq TSemi . Stmt  (12)
-=======
 	Exp : TId TLParen . CallParams TRParen  (39)
 	CallParams : .  (52)
->>>>>>> External Changes
 
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	TRParen  reduce 52
-=======
-	Exp : TId TLParen . CallParams TRParen  (39)
-	CallParams : .  (52)
->>>>>>> External Changes
-=======
-	Exp : TId TLParen . CallParams TRParen  (39)
-	CallParams : .  (52)
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	LVal  goto 58
-	Exp  goto 70
-	CallParams  goto 99
-	Exps  goto 73
-=======
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	TRParen  reduce 52
-=======
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	TRParen  reduce 52
->>>>>>> External Changes
-=======
-	Exp : TId TLParen . CallParams TRParen  (39)
-	CallParams : .  (52)
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	LVal  goto 58
-	Exp  goto 70
-	CallParams  goto 99
-	Exps  goto 73
->>>>>>> External Changes
-=======
-	LVal  goto 58
-	Exp  goto 70
-	CallParams  goto 99
-	Exps  goto 73
->>>>>>> External Changes
-=======
 	TBLit  shift 50
 	TCLit  shift 51
 	TId  shift 52
@@ -1630,7 +865,6 @@ state 74
 	Exp  goto 70
 	CallParams  goto 99
 	Exps  goto 73
->>>>>>> External Changes
 
 
 state 75
@@ -1746,62 +980,6 @@ state 80
 state 81
 	Exp : Exp TMinus . Exp  (31)
 
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	TAnd  shift 83
-	TEq  shift 84
-	TLess  shift 85
-	TMinus  shift 86
-	TOr  shift 87
-	TPlus  shift 88
-	TRParen  shift 102
-	TSlash  sh=======
-	LVal : TId .  (19)
-	LVal : TId . TLBracket Exps TRBracket  (20)
-	Exp : TId . TLParen CallParams TRParen  (39)
-
-	TLBracket  shift 48
-	TLParen  shift 74
-	TAnd  reduce 19
-	TComma  reduce 19
-	TDo  reduce 19
-	TElse  reduce 19
-	TEq  reduce 19
-	TLess  reduce 19
-	TMinus  reduce 19
-	TOr  reduce 19
-	TPlus  reduce 19
-	TRBracket  reduce 19
-	TRCurly  reduce 19
-	TRParen  reduce 19
-	TSemi  reduce 19
-	TSlash  reduce 19
-	TThen  reduce 19
-	TTimes  reduce 19
-
-
-state 53
-	Exp : TLCurly . Exps TRCurly  (27)
-=======
-	Exp : TId TLParen . CallParams TRParen  (39)
-	CallParams : .  (52)
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	TBLit  shift 50
-	TCLit  shift>>>>>>> External Changes
-=======
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  >>>>>>> External Changes
-=======
 	TBLit  shift 50
 	TCLit  shift 51
 	TId  shift 52
@@ -1810,36 +988,6 @@ state 53
 	TNLit  shift 55
 	TNot  shift 56
 	TSLit  shift 57
-=======
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
->>>>>>> External Changes
-=======
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
->>>>>>> External Changes
-=======
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
->>>>>>> External Changes
 	.  error
 
 	LVal  goto 58
@@ -1864,26 +1012,8 @@ state 82
 
 
 state 83
-<<<<<<< Local Changes
 	Exp : Exp TPlus . Exp  (30)
 
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
-=======
-	Exp : Exp TPlus . Exp  (30)
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	LVal  goto 58
-	Exp  goto 107
-=======
 	TBLit  shift 50
 	TCLit  shift 51
 	TId  shift 52
@@ -1896,64 +1026,9 @@ state 83
 
 	LVal  goto 58
 	Exp  goto 107
->>>>>>> External Changes
 
 
 state 84
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	Exp : Exp TSlash . Exp  (33)
-=======
-	Exp : Exp TSlash . Exp  (33)
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
-=======
-	Exp : Exp TSlash . Exp  (33)
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	LVal  goto 58
-	Exp  goto 108
-=======
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
-
-	LVal  goto 58
-	Exp  goto 108
->>>>>>> External Changes
-=======
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
-
-	LVal  goto 58
-	Exp  goto 108
->>>>>>> External Changes
-=======
 	Exp : Exp TSlash . Exp  (33)
 
 	TBLit  shift 50
@@ -1968,16 +1043,9 @@ state 84
 
 	LVal  goto 58
 	Exp  goto 108
->>>>>>> External Changes
 
 
 state 85
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	Stmt : TIf Exp TThen . Block TElse Block  (14)
-	Stmt : TIf Exp TThen . Block  (15)
-=======
 	Stmt : TIf Exp TThen . Block TElse Block  (14)
 	Stmt : TIf Exp TThen . Block  (15)
 
@@ -1988,103 +1056,14 @@ state 85
 	TVar  shift 38
 	TWhile  shift 39
 	.  error
->>>>>>> External Changes
 
-<<<<<<< Local Changes
-	TBegin  shift 34
-	TId  shift 35
-	TIf  shift 36
-	TReturn  shift 37
-	TVar  shift 38
-	TWhile  shift 39
-	.  error
-=======
-	Stmt : TIf Exp TThen . Block TElse Block  (14)
-	Stmt : TIf Exp TThen . Block  (15)
-
-	TBegin  shift 34
-	TId  shift 35
-	TIf  shift 36
-	TReturn  shift 37
-	TVar  shift 38
-	TWhile  shift 39
-	.  error
->>>>>>> External Changes
-=======
-	Stmt : TIf Exp TThen . Block TElse Block  (14)
-	Stmt : TIf Exp TThen . Block  (15)
-
-	TBegin  shift 34
-	TId  shift 35
-	TIf  shift 36
-	TReturn  shift 37
-	TVar  shift 38
-	TWhile  shift 39
-	.  error
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-<<<<<<< Local Changes
 	Block  goto 109
 	SBlock  goto 41
 	Stmt  goto 42
 	LVal  goto 43
-=======
-	Block  goto 109
-	SBlock  goto 41
-	Stmt  goto 42
-	LVal  goto 43
->>>>>>> External Changes
-=======
-	Block  goto 109
-	SBlock  goto 41
-	Stmt  goto 42
-	LVal  goto 43
->>>>>>> External Changes
-=======
-	Block  goto 109
-	SBlock  goto 41
-	Stmt  goto 42
-	LVal  goto 43
->>>>>>> External Changes
 
 
 state 86
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	Exp : Exp TTimes . Exp  (32)
-=======
-	Exp : Exp TTimes . Exp  (32)
-
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	TBLit  shift 50
-	TCLit  shift 51
-	TId  shift 52
-	TLCurly  shift 53
-	TLParen  shift 54
-	TNLit  shift 55
-	TNot  shift 56
-	TSLit  shift 57
-	.  error
-
-	LVal  goto 58
-	Exp  goto 110
-=======
-	LVal  goto 58
-	Exp  goto 110
->>>>>>> External Changes
-=======
 	Exp : Exp TTimes . Exp  (32)
 
 	TBLit  shift 50
@@ -2099,7 +1078,6 @@ state 86
 
 	LVal  goto 58
 	Exp  goto 110
->>>>>>> External Changes
 
 
 state 87
@@ -2136,9 +1114,6 @@ state 90
 state 91
 	Stmt : TWhile Exp TDo . Block  (16)
 
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-<<<<<<< Local Changes
 	TBegin  shift 34
 	TId  shift 35
 	TIf  shift 36
@@ -2151,120 +1126,8 @@ state 91
 	SBlock  goto 41
 	Stmt  goto 42
 	LVal  goto 43
-=======
-	TBegin  shift 34
-	TId  shift 35
-	TIf  shift 36
-	TReturn  shift 37
-	TVar  shift 38
-	TWhile  shift 39
-	.  error
-
-	Block  goto 112
-	SBlock  goto 41
-	Stmt  goto 42
-	LVal  goto 43
-=======
-	TBegin  shift 34
-	TId  shift 35
-	TIf  shift 36
-	TReturn  shift 37
-	TVar  shift 38
-	TWhile  shift 39
-	.  error
-
-	Block  goto 112
-	SBlock  goto 41
-	Stmt  goto 42
-	LVal  goto 43
->>>>>>> External Changes
-=======
-	TBegin  shift 34
-	TId  shift 35
-	TIf  shift 36
-	TReturn  shift 37
-	TVar  shift 38
-	TWhile  shift 39
-	.  error
-
-	Block  goto 112
-	SBlock  goto 41
-	Stmt  goto 42
-	LVal  goto 43
->>>>>>> External Changes
 
 
-state 92
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-	Stmt : LVal TAssign Exp .  (18)
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-
-	TAnd  shift 78
-	TEq  shift 79
-	TLess  shift 80
-	TMinus  shift 81
-	TOr  shift 82
-	TPlus  shift 83
-	TSlash  shift 84
-	TTimes  shift 86
-	TElse  reduce 18
-	TSemi  reduce 18
->>>>>>> External Changes
-=======
-	Stmt : LVal TAssign Exp .  (18)
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-
-	TAnd  shift 78
-	TEq  shift 79
-	TLess  shift 80
-	TMinus  shift 81
-	TOr  shift 82
-	TPlus  shift 83
-	TSlash  shift 84
-	TTimes  shift 86
-	TElse  reduce 18
-	TSemi  reduce 18
->>>>>>> External Changes
-=======
-	Stmt : LVal TAssign Exp .  (18)
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-
-	TAnd  shift 78
-	TEq  shift 79
-	TLess  shift 80
-	TMinus  shift 81
-	TOr  shift 82
-	TPlus  shift 83
-	TSlash  shift 84
-	TTimes  shift 86
-	TElse  reduce 18
-	TSemi  reduce 18
->>>>>>> External Changes
-
-
-<<<<<<< Local Changes
 state 92
 	Stmt : LVal TAssign Exp .  (18)
 	Exp : Exp . TPlus Exp  (30)
@@ -2274,8 +1137,20 @@ state 92
 	Exp : Exp . TEq Exp  (34)
 	Exp : Exp . TLess Exp  (35)
 	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp >>>>>>> External Changes
-=======
+	Exp : Exp . TOr Exp  (37)
+
+	TAnd  shift 78
+	TEq  shift 79
+	TLess  shift 80
+	TMinus  shift 81
+	TOr  shift 82
+	TPlus  shift 83
+	TSlash  shift 84
+	TTimes  shift 86
+	TElse  reduce 18
+	TSemi  reduce 18
+
+
 state 93
 	FunDec : TFunction TId TLParen PDecl TRParen TColon Type Block TSemi .  (5)
 
@@ -2455,36 +1330,6 @@ state 105
 	TThen  reduce 31
 
 
-<<<<<<< Local Changes
-<<<<<<< Local Changes
-state 106
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-	Exp : Exp TOr Exp .  (37)
-
-	TAnd  shift 78
-	TEq  shift 79
-	TLess  shift 80
-	TMinus  shift 81
-	TOr  shift 82
-	TPlus  shift 83
-	TSlash  shift 84
-	TTimes  shift 86
-	TComma  reduce 37
-	TDo  reduce 37
-	TElse  reduce 37
-	TRBracket  reduce 37
-	TRCurly  reduce 37
-	TRParen  reduce 37
-	TSemi  reduce 37
-	TThen  reduce 37
-=======
 state 106
 	Exp : Exp . TPlus Exp  (30)
 	Exp : Exp . TMinus Exp  (31)
@@ -2611,281 +1456,8 @@ state 110
 
 state 111
 	Decs : Decs Dec TSemi .  (45)
->>>>>>> External Changes
 
-<<<<<<< Local Changes
-=======
 	.  reduce 45
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-state 107
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp TPlus Exp .  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-=======
-state 106
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-	Exp : Exp TOr Exp .  (37)
-
-	TAnd  shift 78
-	TEq  shift 79
-	TLess  shift 80
-	TMinus  shift 81
-	TOr  shift 82
-	TPlus  shift 83
-	TSlash  shift 84
-	TTimes  shift 86
-	TComma  reduce 37
-	TDo  reduce 37
-	TElse  reduce 37
-	TRBracket  reduce 37
-	TRCurly  reduce 37
-	TRParen  reduce 37
-	TSemi  reduce 37
-	TThen  reduce 37
-
-
-state 107
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp TPlus Exp .  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-
-	TSlash  shift 84
-	TTimes  shift 86
-	TAnd  reduce 30
-	TComma  reduce 30
-	TDo  reduce 30
-	TElse  reduce 30
-	TEq  reduce 30
-	TLess  reduce 30
-	TMinus  reduce 30
-	TOr  reduce 30
-	TPlus  reduce 30
-	TRBracket  reduce 30
-	TRCurly  reduce 30
-	TRParen  reduce 30
-	TSemi  reduce 30
-	TThen  reduce 30
-
-=======
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-state 108
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp TSlash Exp .  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-
-	TAnd  reduce 33
-	TComma  reduce 33
-	TDo  reduce 33
-	TElse  reduce 33
-	TEq  reduce 33
-	TLess  reduce 33
-	TMinus  reduce 33
-	TOr  reduce 33
-	TPlus  reduce 33
-	TRBracket  reduce 33
-	TRCurly  reduce 33
-	TRParen  reduce 33
-	TSemi  reduce 33
-	TSlash  reduce 33
-	TThen  reduce 33
-	TTimes  reduce 33
-=======
-state 112
-	Stmt : TWhile Exp TDo Block .  (16)
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-=======
-	.  reduce 16
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-state 109
-	Stmt : TIf Exp TThen Block . TElse Block  (14)
-	Stmt : TIf Exp TThen Block .  (15)
-=======
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	TElse  shift 115
-	TSemi  reduce 15
-=======
-state 113
-	Exps : Exp TComma Exps .  (53)
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-=======
-	.  reduce 53
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-state 110
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp TTimes Exp .  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-
-	TAnd  reduce 32
-	TComma  reduce 32
-	TDo  reduce 32
-	TElse  reduce 32
-	TEq  reduce 32
-	TLess  reduce 32
-	TMinus  reduce 32
-	TOr  reduce 32
-	TPlus  reduce 32
-	TRBracket  reduce 32
-	TRCurly  reduce 32
-	TRParen  reduce 32
-	TSemi  reduce 32
-	TSlash  reduce 32
-	TThen  reduce 32
-	TTimes  reduce 32
-
-
-state 111
-	Decs : Decs Dec TSemi .  (45)
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	TSlash  shift 84
-	TTimes  shift 86
-	TAnd  reduce 30
-	TComma  reduce 30
-	TDo  reduce 30
-	TElse  reduce 30
-	TEq  reduce 30
-	TLess  reduce 30
-	TMinus  reduce 30
-	TOr  reduce 30
-	TPlus  reduce 30
-	TRBracket  reduce 30
-	TRCurly  reduce 30
-	TRParen  reduce 30
-	TSemi  reduce 30
-	TThen  reduce 30
-=======
->>>>>>> External Changes
-
-state 114
-	Exp : TId TLParen CallParams TRParen .  (39)
-
-<<<<<<< Local Changes
-state 108
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp TSlash Exp .  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-
-	TAnd  reduce 33
-	TComma  reduce 33
-	TDo  reduce 33
-	TElse  reduce 33
-	TEq  reduce 33
-	TLess  reduce 33
-	TMinus  reduce 33
-	TOr  reduce 33
-	TPlus  reduce 33
-	TRBracket  reduce 33
-	TRCurly  reduce 33
-	TRParen  reduce 33
-	TSemi  reduce 33
-	TSlash  reduce 33
-	TThen  reduce 33
-	TTimes  reduce 33
-
-
-state 109
-	Stmt : TIf Exp TThen Block . TElse Block  (14)
-	Stmt : TIf Exp TThen Block .  (15)
-
-	TElse  shift 115
-	TSemi  reduce 15
-
-
-state 110
-	Exp : Exp . TPlus Exp  (30)
-	Exp : Exp . TMinus Exp  (31)
-	Exp : Exp . TTimes Exp  (32)
-	Exp : Exp TTimes Exp .  (32)
-	Exp : Exp . TSlash Exp  (33)
-	Exp : Exp . TEq Exp  (34)
-	Exp : Exp . TLess Exp  (35)
-	Exp : Exp . TAnd Exp  (36)
-	Exp : Exp . TOr Exp  (37)
-
-	TAnd  reduce 32
-	TComma  reduce 32
-	TDo  reduce 32
-	TElse  reduce 32
-	TEq  reduce 32
-	TLess  reduce 32
-	TMinus  reduce 32
-	TOr  reduce 32
-	TPlus  reduce 32
-	TRBracket  reduce 32
-	TRCurly  reduce 32
-	TRParen  reduce 32
-	TSemi  reduce 32
-	TSlash  reduce 32
-	TThen  reduce 32
-	TTimes  reduce 32
-
-=======
-	.  reduce 39
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-state 111
-	Decs : Decs Dec TSemi .  (45)
-=======
->>>>>>> External Changes
-
-<<<<<<< Local Changes
-	.  reduce 45
-=======
-	.  reduce 45
->>>>>>> External Changes
 
 
 state 112
@@ -2908,10 +1480,6 @@ state 114
 
 state 115
 	Stmt : TIf Exp TThen Block TElse . Block  (14)
-=======
-state 115
-	Stmt : TIf Exp TThen Block TElse . Block  (14)
->>>>>>> External Changes
 
 	TBegin  shift 34
 	TId  shift 35
@@ -2933,16 +1501,5 @@ state 116
 	.  reduce 14
 
 
-<<<<<<< Local Changes
-<<<<<<< Local Changes
 46 terminals, 20 nonterminals
 56 grammar rules, 117 states
->>>>>>> External Changes
-=======
-46 terminals, 20 nonterminals
-56 grammar rules, 117 states
->>>>>>> External Changes
-=======
-46 terminals, 20 nonterminals
-56 grammar rules, 117 states
->>>>>>> External Changes

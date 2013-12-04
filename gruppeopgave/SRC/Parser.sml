@@ -55,34 +55,8 @@ prim_val vector_ : int -> 'a -> 'a Vector.vector = 2 "make_vect";
 prim_val update_ : 'a Vector.vector -> int -> 'a -> unit = 3 "set_vect_item";
 
  
-   (* See the Moscow ML manual for the syntax and structure. Roughly:
-
-    `%``{`
-         header (* with ML-like comments *)
-    `%``}`
-        declarations  /* with c-like comments */
-    `%``%`
-        rules         /* with c-like comments */
-    `%``%`
-        trailer (* with ML-like comments *)
-    EOF
-
-    The (optional) header and trailer contain ML code to include in the
-    generated file (after the data declaration and at the end).
-
-    Compiling this file with:
-        $ mosmlyac -v G_AB.grm
-    will generate the code in "G_AB.sig" and "G_AB.sml" files, and a
-    file "G_AB.output" which describes the generated LR(0) automaton.
-    *)
-
-    type pos = int*int (* position in string *)
-    (* Unfortunately, we cannot use this type in the declarations -
-       the code ends up _after_ the data declaration. *)
-
-    (* parse exception *)
-    exception ParseError of string
-(* Line 34, file src/Parser.sml *)
+   
+(* Line 8, file Parser.sml *)
 val yytransl = #[
   257 (* TAnd *),
   258 (* TArray *),
@@ -305,7 +279,7 @@ val yycheck = "\026\000\
 \\019\001\255\255\037\001\255\255\039\001\038\001\255\255\040\001";
 
 val yyact = vector_ 56 (fn () => ((raise Fail "parser") : obj));
-(* Rule 1, file src/Parser.grm, line 88 *)
+(* Rule 1, file Parser.grm, line 55 *)
 val _ = update_ yyact 1
 (fn () => repr(let
 val d__1__ = peekVal 1 : AbSyn.Prog
@@ -313,7 +287,7 @@ val d__2__ = peekVal 0 : AbSyn.Pos
 in
 ( (d__1__) ) end : AbSyn.Prog))
 ;
-(* Rule 2, file src/Parser.grm, line 91 *)
+(* Rule 2, file Parser.grm, line 59 *)
 val _ = update_ yyact 2
 (fn () => repr(let
 val d__1__ = peekVal 3 : AbSyn.Pos
@@ -323,7 +297,7 @@ val d__4__ = peekVal 0 : AbSyn.Prog
 in
 ( (d__4__) ) end : AbSyn.Prog))
 ;
-(* Rule 3, file src/Parser.grm, line 94 *)
+(* Rule 3, file Parser.grm, line 63 *)
 val _ = update_ yyact 3
 (fn () => repr(let
 val d__1__ = peekVal 1 : AbSyn.Prog
@@ -331,14 +305,14 @@ val d__2__ = peekVal 0 : AbSyn.FunDec
 in
 ( (d__1__) @ [(d__2__)] ) end : AbSyn.Prog))
 ;
-(* Rule 4, file src/Parser.grm, line 95 *)
+(* Rule 4, file Parser.grm, line 64 *)
 val _ = update_ yyact 4
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.FunDec
 in
 ( [(d__1__)] ) end : AbSyn.Prog))
 ;
-(* Rule 5, file src/Parser.grm, line 99 *)
+(* Rule 5, file Parser.grm, line 69 *)
 val _ = update_ yyact 5
 (fn () => repr(let
 val d__1__ = peekVal 8 : AbSyn.Pos
@@ -353,7 +327,7 @@ val d__9__ = peekVal 0 : AbSyn.Pos
 in
 ( AbSyn.Func((d__7__), #1 (d__2__), (d__4__), (d__8__), (d__1__)) ) end : AbSyn.FunDec))
 ;
-(* Rule 6, file src/Parser.grm, line 101 *)
+(* Rule 6, file Parser.grm, line 71 *)
 val _ = update_ yyact 6
 (fn () => repr(let
 val d__1__ = peekVal 6 : AbSyn.Pos
@@ -366,14 +340,14 @@ val d__7__ = peekVal 0 : AbSyn.Pos
 in
 ( AbSyn.Proc(#1 (d__2__), (d__4__), (d__6__), (d__1__)) ) end : AbSyn.FunDec))
 ;
-(* Rule 7, file src/Parser.grm, line 104 *)
+(* Rule 7, file Parser.grm, line 75 *)
 val _ = update_ yyact 7
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.Stmt list
 in
 ( AbSyn.Block ([], (d__1__)) ) end : AbSyn.StmtBlock))
 ;
-(* Rule 8, file src/Parser.grm, line 105 *)
+(* Rule 8, file Parser.grm, line 76 *)
 val _ = update_ yyact 8
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Pos
@@ -382,7 +356,7 @@ val d__3__ = peekVal 0 : AbSyn.Stmt list
 in
 ( AbSyn.Block ((d__2__), (d__3__)) ) end : AbSyn.StmtBlock))
 ;
-(* Rule 9, file src/Parser.grm, line 112 *)
+(* Rule 9, file Parser.grm, line 80 *)
 val _ = update_ yyact 9
 (fn () => repr(let
 val d__1__ = peekVal 3 : AbSyn.Pos
@@ -392,14 +366,14 @@ val d__4__ = peekVal 0 : AbSyn.Pos
 in
 ( (d__2__) ) end : AbSyn.Stmt list))
 ;
-(* Rule 10, file src/Parser.grm, line 113 *)
+(* Rule 10, file Parser.grm, line 81 *)
 val _ = update_ yyact 10
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.Stmt
 in
 ( [(d__1__)] ) end : AbSyn.Stmt list))
 ;
-(* Rule 11, file src/Parser.grm, line 116 *)
+(* Rule 11, file Parser.grm, line 85 *)
 val _ = update_ yyact 11
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Stmt list
@@ -408,14 +382,14 @@ val d__3__ = peekVal 0 : AbSyn.Stmt
 in
 ( (d__1__) @ [(d__3__)] ) end : AbSyn.Stmt list))
 ;
-(* Rule 12, file src/Parser.grm, line 117 *)
+(* Rule 12, file Parser.grm, line 86 *)
 val _ = update_ yyact 12
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.Stmt
 in
 ( [(d__1__)] ) end : AbSyn.Stmt list))
 ;
-(* Rule 13, file src/Parser.grm, line 122 *)
+(* Rule 13, file Parser.grm, line 91 *)
 val _ = update_ yyact 13
 (fn () => repr(let
 val d__1__ = peekVal 3 : string*AbSyn.Pos
@@ -425,7 +399,7 @@ val d__4__ = peekVal 0 : AbSyn.Pos
 in
 ( AbSyn.ProcCall (#1 (d__1__), (d__3__), #2 (d__1__)) ) end : AbSyn.Stmt))
 ;
-(* Rule 14, file src/Parser.grm, line 123 *)
+(* Rule 14, file Parser.grm, line 92 *)
 val _ = update_ yyact 14
 (fn () => repr(let
 val d__1__ = peekVal 5 : AbSyn.Pos
@@ -437,7 +411,7 @@ val d__6__ = peekVal 0 : AbSyn.StmtBlock
 in
 ( AbSyn.IfThEl ((d__2__), (d__4__), (d__6__), (d__1__)) ) end : AbSyn.Stmt))
 ;
-(* Rule 15, file src/Parser.grm, line 124 *)
+(* Rule 15, file Parser.grm, line 93 *)
 val _ = update_ yyact 15
 (fn () => repr(let
 val d__1__ = peekVal 3 : AbSyn.Pos
@@ -447,7 +421,7 @@ val d__4__ = peekVal 0 : AbSyn.StmtBlock
 in
 ( AbSyn.IfThEl ((d__2__), (d__4__), AbSyn.Block([],[]), (d__1__))) end : AbSyn.Stmt))
 ;
-(* Rule 16, file src/Parser.grm, line 126 *)
+(* Rule 16, file Parser.grm, line 95 *)
 val _ = update_ yyact 16
 (fn () => repr(let
 val d__1__ = peekVal 3 : AbSyn.Pos
@@ -457,7 +431,7 @@ val d__4__ = peekVal 0 : AbSyn.StmtBlock
 in
 ( AbSyn.While ((d__2__), (d__4__), (d__1__)) ) end : AbSyn.Stmt))
 ;
-(* Rule 17, file src/Parser.grm, line 127 *)
+(* Rule 17, file Parser.grm, line 96 *)
 val _ = update_ yyact 17
 (fn () => repr(let
 val d__1__ = peekVal 1 : AbSyn.Pos
@@ -465,7 +439,7 @@ val d__2__ = peekVal 0 : AbSyn.Exp option
 in
 ( AbSyn.Return ((d__2__), (d__1__)) ) end : AbSyn.Stmt))
 ;
-(* Rule 18, file src/Parser.grm, line 128 *)
+(* Rule 18, file Parser.grm, line 97 *)
 val _ = update_ yyact 18
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.LVAL
@@ -474,14 +448,14 @@ val d__3__ = peekVal 0 : AbSyn.Exp
 in
 ( AbSyn.Assign ((d__1__), (d__3__), (d__2__)) ) end : AbSyn.Stmt))
 ;
-(* Rule 19, file src/Parser.grm, line 133 *)
+(* Rule 19, file Parser.grm, line 102 *)
 val _ = update_ yyact 19
 (fn () => repr(let
 val d__1__ = peekVal 0 : string*AbSyn.Pos
 in
 ( AbSyn.Var (#1 (d__1__)) ) end : AbSyn.LVAL))
 ;
-(* Rule 20, file src/Parser.grm, line 134 *)
+(* Rule 20, file Parser.grm, line 103 *)
 val _ = update_ yyact 20
 (fn () => repr(let
 val d__1__ = peekVal 3 : string*AbSyn.Pos
@@ -491,72 +465,72 @@ val d__4__ = peekVal 0 : AbSyn.Pos
 in
 ( AbSyn.Index (#1 (d__1__), (d__3__)) ) end : AbSyn.LVAL))
 ;
-(* Rule 21, file src/Parser.grm, line 137 *)
+(* Rule 21, file Parser.grm, line 107 *)
 val _ = update_ yyact 21
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.Exp
 in
 ( SOME (d__1__) ) end : AbSyn.Exp option))
 ;
-(* Rule 22, file src/Parser.grm, line 138 *)
+(* Rule 22, file Parser.grm, line 108 *)
 val _ = update_ yyact 22
 (fn () => repr(let
 in
 ( NONE ) end : AbSyn.Exp option))
 ;
-(* Rule 23, file src/Parser.grm, line 141 *)
+(* Rule 23, file Parser.grm, line 112 *)
 val _ = update_ yyact 23
 (fn () => repr(let
 val d__1__ = peekVal 0 : int*AbSyn.Pos
 in
 ( AbSyn.Literal (AbSyn.BVal(AbSyn.Num(#1 (d__1__))), #2 (d__1__)) ) end : AbSyn.Exp))
 ;
-(* Rule 24, file src/Parser.grm, line 142 *)
+(* Rule 24, file Parser.grm, line 113 *)
 val _ = update_ yyact 24
 (fn () => repr(let
 val d__1__ = peekVal 0 : bool*AbSyn.Pos
 in
 ( AbSyn.Literal (AbSyn.BVal(AbSyn.Log(#1 (d__1__))), #2 (d__1__)) ) end : AbSyn.Exp))
 ;
-(* Rule 25, file src/Parser.grm, line 143 *)
+(* Rule 25, file Parser.grm, line 114 *)
 val _ = update_ yyact 25
 (fn () => repr(let
 val d__1__ = peekVal 0 : char*AbSyn.Pos
 in
 ( AbSyn.Literal (AbSyn.BVal(AbSyn.Chr(#1 (d__1__))), #2 (d__1__)) ) end : AbSyn.Exp))
 ;
-(* Rule 26, file src/Parser.grm, line 144 *)
+(* Rule 26, file Parser.grm, line 115 *)
 val _ = update_ yyact 26
 (fn () => repr(let
 val d__1__ = peekVal 0 : string*AbSyn.Pos
 in
-( AbSyn.StrLit  (#1 (d__1__), #2 (d__1__)) ) end : AbSyn.Exp))
+( AbSyn.StrLit (#1 (d__1__), #2 (d__1__)) ) end : AbSyn.Exp))
 ;
-(* Rule 27, file src/Parser.grm, line 145 *)
+(* Rule 27, file Parser.grm, line 116 *)
 val _ = update_ yyact 27
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Pos
 val d__2__ = peekVal 1 : AbSyn.Exp list
 val d__3__ = peekVal 0 : AbSyn.Pos
 in
-( AbSyn.ArrLit  ((d__2__),(d__1__)) ) end : AbSyn.Exp))
+( AbSyn.ArrLit ((d__2__),(d__1__)) ) end : AbSyn.Exp))
 ;
-(* Rule 28, file src/Parser.grm, line 146 *)
+(* Rule 28, file Parser.grm, line 117 *)
 val _ = update_ yyact 28
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.LVAL
 in
-( AbSyn.LValue  ((d__1__), (0,0)) ) end : AbSyn.Exp))
+( AbSyn.LValue ((d__1__), (0,0)) ) end : AbSyn.Exp))
 ;
-(* Rule 29, file src/Parser.grm, line 147 *)
+(* Rule 29, file Parser.grm, line 118 *)
 val _ = update_ yyact 29
 (fn () => repr(let
 val d__1__ = peekVal 1 : AbSyn.Pos
 val d__2__ = peekVal 0 : AbSyn.Exp
 in
-( AbSyn.Not     ((d__2__), (d__1__)) ) end : AbSyn.Exp))
+( AbSyn.Not ((d__2__), (d__1__)) ) end : AbSyn.Exp))
 ;
-(* Rule 30, file src/Parser.grm, line 148 *)
+(* Rule 30, file Parser.grm, line 119 *)
 val _ = update_ yyact 30
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Exp
@@ -565,7 +539,7 @@ val d__3__ = peekVal 0 : AbSyn.Exp
 in
 ( AbSyn.Plus ((d__1__), (d__3__), (d__2__)) ) end : AbSyn.Exp))
 ;
-(* Rule 31, file src/Parser.grm, line 149 *)
+(* Rule 31, file Parser.grm, line 120 *)
 val _ = update_ yyact 31
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Exp
@@ -574,7 +548,7 @@ val d__3__ = peekVal 0 : AbSyn.Exp
 in
 ( AbSyn.Minus ((d__1__), (d__3__), (d__2__)) ) end : AbSyn.Exp))
 ;
-(* Rule 32, file src/Parser.grm, line 150 *)
+(* Rule 32, file Parser.grm, line 121 *)
 val _ = update_ yyact 32
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Exp
@@ -583,7 +557,7 @@ val d__3__ = peekVal 0 : AbSyn.Exp
 in
 ( AbSyn.Times ((d__1__), (d__3__), (d__2__)) ) end : AbSyn.Exp))
 ;
-(* Rule 33, file src/Parser.grm, line 151 *)
+(* Rule 33, file Parser.grm, line 122 *)
 val _ = update_ yyact 33
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Exp
@@ -592,7 +566,7 @@ val d__3__ = peekVal 0 : AbSyn.Exp
 in
 ( AbSyn.Div ((d__1__), (d__3__), (d__2__)) ) end : AbSyn.Exp))
 ;
-(* Rule 34, file src/Parser.grm, line 152 *)
+(* Rule 34, file Parser.grm, line 123 *)
 val _ = update_ yyact 34
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Exp
@@ -601,7 +575,7 @@ val d__3__ = peekVal 0 : AbSyn.Exp
 in
 ( AbSyn.Equal ((d__1__), (d__3__), (d__2__)) ) end : AbSyn.Exp))
 ;
-(* Rule 35, file src/Parser.grm, line 153 *)
+(* Rule 35, file Parser.grm, line 124 *)
 val _ = update_ yyact 35
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Exp
@@ -610,7 +584,7 @@ val d__3__ = peekVal 0 : AbSyn.Exp
 in
 ( AbSyn.Less ((d__1__), (d__3__), (d__2__)) ) end : AbSyn.Exp))
 ;
-(* Rule 36, file src/Parser.grm, line 154 *)
+(* Rule 36, file Parser.grm, line 125 *)
 val _ = update_ yyact 36
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Exp
@@ -619,7 +593,7 @@ val d__3__ = peekVal 0 : AbSyn.Exp
 in
 ( AbSyn.And ((d__1__), (d__3__), (d__2__)) ) end : AbSyn.Exp))
 ;
-(* Rule 37, file src/Parser.grm, line 155 *)
+(* Rule 37, file Parser.grm, line 126 *)
 val _ = update_ yyact 37
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Exp
@@ -628,7 +602,7 @@ val d__3__ = peekVal 0 : AbSyn.Exp
 in
 ( AbSyn.Or ((d__1__), (d__3__), (d__2__)) ) end : AbSyn.Exp))
 ;
-(* Rule 38, file src/Parser.grm, line 156 *)
+(* Rule 38, file Parser.grm, line 127 *)
 val _ = update_ yyact 38
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Pos
@@ -637,7 +611,7 @@ val d__3__ = peekVal 0 : AbSyn.Pos
 in
 ( (d__2__) ) end : AbSyn.Exp))
 ;
-(* Rule 39, file src/Parser.grm, line 157 *)
+(* Rule 39, file Parser.grm, line 128 *)
 val _ = update_ yyact 39
 (fn () => repr(let
 val d__1__ = peekVal 3 : string*AbSyn.Pos
@@ -647,20 +621,20 @@ val d__4__ = peekVal 0 : AbSyn.Pos
 in
 ( AbSyn.FunApp (#1 (d__1__), (d__3__), # 2(d__1__)) ) end : AbSyn.Exp))
 ;
-(* Rule 40, file src/Parser.grm, line 162 *)
+(* Rule 40, file Parser.grm, line 133 *)
 val _ = update_ yyact 40
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.Dec list
 in
 ( (d__1__) ) end : AbSyn.Dec list))
 ;
-(* Rule 41, file src/Parser.grm, line 163 *)
+(* Rule 41, file Parser.grm, line 134 *)
 val _ = update_ yyact 41
 (fn () => repr(let
 in
 ( [] ) end : AbSyn.Dec list))
 ;
-(* Rule 42, file src/Parser.grm, line 166 *)
+(* Rule 42, file Parser.grm, line 138 *)
 val _ = update_ yyact 42
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Dec list
@@ -669,14 +643,14 @@ val d__3__ = peekVal 0 : AbSyn.Dec
 in
 ( (d__1__) @ [(d__3__)] ) end : AbSyn.Dec list))
 ;
-(* Rule 43, file src/Parser.grm, line 167 *)
+(* Rule 43, file Parser.grm, line 139 *)
 val _ = update_ yyact 43
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.Dec
 in
 ( [(d__1__)] ) end : AbSyn.Dec list))
 ;
-(* Rule 44, file src/Parser.grm, line 170 *)
+(* Rule 44, file Parser.grm, line 143 *)
 val _ = update_ yyact 44
 (fn () => repr(let
 val d__1__ = peekVal 2 : string*AbSyn.Pos
@@ -685,7 +659,7 @@ val d__3__ = peekVal 0 : AbSyn.Type
 in
 ( AbSyn.Dec (#1 (d__1__), (d__3__), #2 (d__1__)) ) end : AbSyn.Dec))
 ;
-(* Rule 45, file src/Parser.grm, line 173 *)
+(* Rule 45, file Parser.grm, line 147 *)
 val _ = update_ yyact 45
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Dec list
@@ -694,7 +668,7 @@ val d__3__ = peekVal 0 : AbSyn.Pos
 in
 ( (d__1__) @ [(d__2__)] ) end : AbSyn.Dec list))
 ;
-(* Rule 46, file src/Parser.grm, line 174 *)
+(* Rule 46, file Parser.grm, line 148 *)
 val _ = update_ yyact 46
 (fn () => repr(let
 val d__1__ = peekVal 1 : AbSyn.Dec
@@ -702,28 +676,28 @@ val d__2__ = peekVal 0 : AbSyn.Pos
 in
 ( [(d__1__)] ) end : AbSyn.Dec list))
 ;
-(* Rule 47, file src/Parser.grm, line 177 *)
+(* Rule 47, file Parser.grm, line 152 *)
 val _ = update_ yyact 47
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.Pos
 in
 ( AbSyn.Int ((d__1__)) ) end : AbSyn.Type))
 ;
-(* Rule 48, file src/Parser.grm, line 178 *)
+(* Rule 48, file Parser.grm, line 153 *)
 val _ = update_ yyact 48
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.Pos
 in
 ( AbSyn.Char ((d__1__)) ) end : AbSyn.Type))
 ;
-(* Rule 49, file src/Parser.grm, line 179 *)
+(* Rule 49, file Parser.grm, line 154 *)
 val _ = update_ yyact 49
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.Pos
 in
 ( AbSyn.Bool ((d__1__)) ) end : AbSyn.Type))
 ;
-(* Rule 50, file src/Parser.grm, line 180 *)
+(* Rule 50, file Parser.grm, line 155 *)
 val _ = update_ yyact 50
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Pos
@@ -732,20 +706,20 @@ val d__3__ = peekVal 0 : AbSyn.Type
 in
 ( AbSyn.Array ((d__3__),(d__1__)) ) end : AbSyn.Type))
 ;
-(* Rule 51, file src/Parser.grm, line 185 *)
+(* Rule 51, file Parser.grm, line 160 *)
 val _ = update_ yyact 51
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.Exp list
 in
 ( (d__1__) ) end : AbSyn.Exp list))
 ;
-(* Rule 52, file src/Parser.grm, line 186 *)
+(* Rule 52, file Parser.grm, line 161 *)
 val _ = update_ yyact 52
 (fn () => repr(let
 in
 ( [] ) end : AbSyn.Exp list))
 ;
-(* Rule 53, file src/Parser.grm, line 189 *)
+(* Rule 53, file Parser.grm, line 165 *)
 val _ = update_ yyact 53
 (fn () => repr(let
 val d__1__ = peekVal 2 : AbSyn.Exp
@@ -754,7 +728,7 @@ val d__3__ = peekVal 0 : AbSyn.Exp list
 in
 ( (d__1__) :: (d__3__) ) end : AbSyn.Exp list))
 ;
-(* Rule 54, file src/Parser.grm, line 190 *)
+(* Rule 54, file Parser.grm, line 166 *)
 val _ = update_ yyact 54
 (fn () => repr(let
 val d__1__ = peekVal 0 : AbSyn.Exp
@@ -777,15 +751,7 @@ val yytables : parseTables =
     yytable,
     yycheck );
 fun Program lexer lexbuf = yyparse yytables 1 lexer lexbuf;
-(* Line 193, file src/Parser.grm *)
+(* Line 169, file Parser.grm *)
 
-(* SML trailer
-
- At this point we can use the parse function (%start above), whose type is
-   Start : (Lexing.lexbuf -> token) -> Lexing.lexbuf -> Exp;
-
-  (Lexing.lexbuf -> token) is usually mosmllex-generated, but a simple hack
-  here.
-
-*)
-(* Line 694, file src/Parser.sml *)
+(* SML trailer *)
+(* Line 660, file Parser.sml *)

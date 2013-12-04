@@ -11,13 +11,9 @@ begin
     d := 3;
     o := 4;
     if n = 1 then
-        if m = 3 then
+        if d = 1 then
             write("Den var sand")
-        else write ("Dette skal skrives!")
-    else 
-        if m = 2 then
-            write("m var 2")
-        else
-            write("Den var falsk");
+        else 
+            write("If-then-else virker!!!");
     end;
         
