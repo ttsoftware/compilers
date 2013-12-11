@@ -1,0 +1,85 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[danish]{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage[danish]{varioref}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{listings}
+
+\linespread{1.3}
+
+\title{Testrapport}
+\begin{document}
+
+\title{Weekly assignment 3}
+\date{8. December 2013}
+\author{Troels Thomsen - qvw203}
+
+\clearpage
+\maketitle
+\thispagestyle{empty}
+
+\pagebreak
+
+\section{Week assignment 3} 
+
+\subsection{Exercise 1}
+
+\subsubsection{1.a}
+Først printer vi 22, og derefter 5 og 2, fordi vi i call-by-value ikke ændrer funktionsparameter variablene.  
+
+\subsubsection{1.b}
+Først printer vi 33, og derefter 14 og 5, fordi vi i call-by-reference ændrer funktionsparameterne videregivet i vores ydre scope. Vores "callee" ændre direkte på værdierne i vores "caller".
+
+\subsubsection{1.c}
+Først printer vi 22, og derefter kan vores x være enten 7 eller 12, og vores y er 3. Dette sker fordi vi i call-by-value-result returnere både vores a og c i x's position.
+
+\pagebreak
+
+\subsection{Exercise 2}
+
+\subsubsection{2.a}
+Hvis vi kalder \textit{f(4)} får vi printet \textit{5}. Dette sker fordi funktionsparameteret int x i f, ikke overskriver det globale x, da funktionsparameteret har sit eget scope.\\
+Hvis vi kalder f(7) printer vi igen 5, fordi vi inde i h laver et nyt x der kun eksiterer i h's scope. Havde vi kaldet \textit{x=y+2}, i stedet for \textit{int x=y+2}.
+
+\subsubsection{2.b}
+Hvis vi kalder \textit{f(4)} får vi printet 4, fordi funktionsparameteret ikke har deres eget scope.\\
+Hvis vi kalder \textit{f(7)} får vi printet 9, af samme årsag.
+
+\subsubsection{2.c}
+Med dynamic scoping behøver vi ikke et inner vtable, fordi vi altid gerne vil opdatere vores outer vtable, der indeholder det yderste scope. Hvis vi kun ændrer vores yderste scope, vil det have samme effekt som dynamic scoping, hvor der ikke eksiterer inner scopes. 
+
+\pagebreak
+
+\subsection{Exercise 3}
+
+\subsubsection{3.a}
+Når funktionen \textit{typeCheckExp} checker en funktion, gør den det rekursivt, ved at evaluere antallet og typerne af funktionsargumenterne. Først finder \textit{typeCheckExp} de forventede argumenttyper for den givne funktion, og checker derefter om de matcher på input argumenternes typer.\\
+Det rekursive kald sker på
+\begin{lstlisting}
+val new_args = ListPair.map (fn (e,et) 
+	=> typeCheckExp(vtab, e, et)) (args, exp_arg_tps)
+\end{lstlisting}
+Hvor hvert enkelt argument bliver type checket.\\
+Hvis vi kører \textit{chr(read()) = read()} igennem \textit{typeCheckExp}, får vi at chr kræver en int som parameter, og returnerer en char. Så kalder vi \textit{typeCheckExp} rekursivt på read, som må returnerer en int, hvis vi ikke skal have en typefejl.
+
+\subsubsection{3.b}
+For at finde de identiske typer må vi bruge \textit{unify} som beskrevet i Most-General Unifier Algorithm.
+
+\begin{enumerate}
+	\item \textit{unify(*, *)} får os ind i step IV, fordi begge er type constructor.
+	\item \textit{unify(list, alpha)} får os ind i step III fordi alpha er en type variable. Så får vi altså at \textit{union(list, alpha) = list int}, fordi vi tager alle list's børn med i union.
+	\item I \textit{unify(list, beta)} får os ind i step III fordi beta er en type variable. Så kører vi \textit{union(list, beta) = list list int}, fordi vi igen tager alle list's børn med i union. 
+\end{enumerate}
+
+Alpha er altså en list int, og beta er en \textit{list alpha = list list int}. Den samlede type bliver derfor en tuble \textit{(list int, list list int)}. 
+
+\end{document}
+
+

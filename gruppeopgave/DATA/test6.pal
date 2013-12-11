@@ -1,0 +1,26 @@
+program test5;
+
+procedure main()
+var 
+    x : int;
+    y : bool;
+begin
+
+    y := chr(read()) = read();
+    write(y);
+
+    x := 3 + read();
+    write(x);
+    y := 3 = read();
+    write(y);
+    y := 'a' = read();
+    write(y);
+    y := 3 < read();
+    write(y);
+    y := false or read();
+    write(y);
+    y := true and read();
+    write(y);
+    y := not read();
+    write(y);
+end;

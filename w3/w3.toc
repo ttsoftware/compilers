@@ -1,0 +1,29 @@
+\select@language {danish}
+\contentsline {section}{\numberline {1}Indledning}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}Testens form\IeC {\r a}l}{3}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Klassificering af usability}{4}{subsection.1.2}
+\contentsline {section}{\numberline {2}Testdeltagernes forventning til webstedet}{5}{section.2}
+\contentsline {subsection}{\numberline {2.1}Negative forventninger}{5}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Positive forventninger}{6}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Konklusion}{6}{subsection.2.3}
+\contentsline {section}{\numberline {3}Testdeltagernes oplevelse af webstedet}{7}{section.3}
+\contentsline {subsection}{\numberline {3.1}Generelle bem\IeC {\ae }rkninger}{7}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Navigation}{8}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Indhold}{9}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Sprog}{14}{subsection.3.4}
+\contentsline {section}{\numberline {A}Fremgangsm\IeC {\r a}de}{15}{appendix.A}
+\contentsline {subsection}{\numberline {A.1}Anvendt udstyr}{15}{subsection.A.1}
+\contentsline {subsection}{\numberline {A.2}Profiler for testdeltagerne}{16}{subsection.A.2}
+\contentsline {subsection}{\numberline {A.3}Valg af testopgaver}{16}{subsection.A.3}
+\contentsline {subsection}{\numberline {A.4}Discussion af metoden}{16}{subsection.A.4}
+\contentsline {section}{\numberline {B}Drejebog}{17}{appendix.B}
+\contentsline {subsection}{\numberline {B.1}Kvalifikationerne til brugerne}{17}{subsection.B.1}
+\contentsline {subsection}{\numberline {B.2}Indledende oplysninger til test-brugeren}{17}{subsection.B.2}
+\contentsline {subsection}{\numberline {B.3}Interview f\IeC {\o }r test}{18}{subsection.B.3}
+\contentsline {subsection}{\numberline {B.4}Testopgaver}{18}{subsection.B.4}
+\contentsline {subsection}{\numberline {B.5}Interview efter test}{20}{subsection.B.5}
+\contentsline {section}{\numberline {C}Testdeltagernes opgavel\IeC {\o }sning}{21}{appendix.C}
+\contentsline {section}{\numberline {D}Inspektion af websted inden test}{23}{appendix.D}
+\contentsline {section}{\numberline {E}Sammenligning med inspektion}{23}{appendix.E}
+\contentsline {section}{\numberline {F}Kommentarer}{24}{appendix.F}
+\contentsline {section}{\numberline {G}Videosammendrag}{24}{appendix.G}
