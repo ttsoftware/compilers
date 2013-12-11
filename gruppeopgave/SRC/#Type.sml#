@@ -176,7 +176,7 @@ struct
 
       (* Must be modified to complete task 3 *)
     | typeCheckExp( vtab, AbSyn.Plus (e1, e2, pos), _ ) =
-        let val e1_new = typeCheckExp( vtab, e1, UnknownType )
+        let val e1_new = typeCheckExp( vtab, e1, KnownType  )
             val e2_new = typeCheckExp( vtab, e2, UnknownType )
             val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
         in  if  typesEqual(BType Int, tp1) andalso typesEqual(BType Int, tp2)
@@ -331,15 +331,7 @@ struct
         (* function call to `new' uses expected type to infer the to-be-read result *)
     | typeCheckExp ( vtab, AbSyn.FunApp ("new", args, pos), etp ) =
         ( case expectedBasicType etp of
-            SOME btp => let 
-                          val typedargs = map (fn n => typeCheckExp(vtab, n, KnownType (BType Int))) args
-                          val types = map typeOfExp typedargs
-                          val rtp = Array ( length args, btp)
-                        in
-                          if List.all (fn n => typesEqual(BType Int, n)) types
-                          then FunApp(("new", (types, SOME rtp)), typedargs,pos)
-                          else raise Error("bla", pos)
-                        end
+            SOME btp => raise Error("in type check new UNIMPLEMENTED, i.e., G-ASSIGNMENT task 3, at ", pos)
                         (*************************************************************)
                         (*** Suggested implementation STEPS:                       ***)
                         (***    1. type check recursively all `args', denote the   ***)

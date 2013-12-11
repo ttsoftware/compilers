@@ -336,7 +336,7 @@ struct
                           val types = map typeOfExp typedargs
                           val rtp = Array ( length args, btp)
                         in
-                          if List.all (fn n => typesEqual(BType Int, n)) types
+                          if map (fn n => typesEqual(BType Int, n)) types
                           then FunApp(("new", (types, SOME rtp)), typedargs,pos)
                           else raise Error("bla", pos)
                         end
