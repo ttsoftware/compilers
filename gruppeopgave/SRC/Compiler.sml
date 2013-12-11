@@ -209,6 +209,14 @@ struct
         in c1 @ c2 @ [Mips.MUL (place,t1,t2)]
         end
 
+    | compileExp( vtable, Div (e1, e2, _), place ) =
+        let val t1 = "div1_" ^ newName()
+            val c1 = compileExp(vtable, e1, t1)
+            val t2 = "div2_" ^ newName()
+            val c2 = compileExp(vtable, e2, t2)
+        in c1 @ c2 @ [Mips.DIV (place,t1,t2)]
+        end
+
     (* Task 2: Some code-generation of operators should occur here. *)
 (*
     | compileExp( vtable, Times(e1, e2, pos), place ) =
@@ -246,6 +254,24 @@ struct
            @ [Mips.MOVE (place, t1), Mips.BEQ (place, "0", lA) ]
            @ c2 (* when here, t1 was  true, so the result is t2 *)
            @ [Mips.MOVE (place, t2), Mips.LABEL lA ]
+        end
+        
+    | compileExp( vtable, Or(e1, e2, _), place ) =
+        let val t1 = "or1_" ^ newName()
+            val c1 = compileExp(vtable, e1, t1)
+            val t2 = "or2_" ^ newName()
+            val c2 = compileExp(vtable, e2, t2)
+            val lA = "_or_" ^ newName()
+        in 
+            c1 @ c2 @ [Mips.OR (place,t1,t2)]
+        end
+        
+    | compileExp( vtable, Not(e1, _), place ) =
+        let val t1 = "not1_" ^ newName()
+            val c1 = compileExp(vtable, e1, t1)
+            val lA = "_not_" ^ newName()
+        in 
+            c1 @ [Mips.XORI (place,t1,"1")]
         end
 
     (* Task 2: Some code-generation of operators should occur here. *)

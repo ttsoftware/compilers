@@ -1,0 +1,22 @@
+program test2;
+
+function test() : bool
+var m : int;
+    o : int;
+    v : bool;
+    p : bool;
+begin
+    m := 2;
+    o := 3;
+    v := true;
+    p := false;
+    return (v or p);
+end;
+
+procedure main()
+var x : bool;
+begin
+    x := test();
+    write(x);
+end;
+    

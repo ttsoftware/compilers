@@ -117,6 +117,16 @@ fun evalAnd (BVal (Log b1), BVal (Log b2), pos) = BVal (Log (b1 andalso b2))
   | evalAnd (v1, v2, pos) =
         raise Error( "And: argument types do not match. Arg1: " ^
                       pp_val v1 ^ ", arg2: " ^ pp_val v2, pos )
+                      
+fun evalOr  (BVal (Log b1), BVal (Log b2), pos) = BVal (Log (b1 orelse b2))
+  | evalOr  (v1, v2, pos) =
+        raise Error( "Or: argument types do not match. Arg1: " ^
+                      pp_val v1 ^ ", arg2: " ^ pp_val v2, pos )
+                      
+fun evalNot  (BVal (Log b1), pos) = BVal (Log (not b1))
+  | evalNot  (v1, pos) =
+        raise Error( "Not: argument types do not match. Arg1: " ^
+                      pp_val v1, pos )
 
 (***********************************************)
 (*** Getting/Setting an Array Index,         ***)
@@ -469,7 +479,13 @@ and evalExp ( Literal(lit,_), vtab, ftab ) = lit
   | evalExp ( Times(e1, e2, pos), vtab, ftab ) =
         let val res1   = evalExp(e1, vtab, ftab)
             val res2   = evalExp(e2, vtab, ftab)
-        in  evalBinop(op -, res1, res2, pos)
+        in  evalBinop(op *, res1, res2, pos)
+        end
+        
+  | evalExp ( Div(e1, e2, pos), vtab, ftab ) =
+        let val res1   = evalExp(e1, vtab, ftab)
+            val res2   = evalExp(e2, vtab, ftab)
+        in  evalBinop(op div, res1, res2, pos)
         end
 
     (* Task 2: Some evaluation of operators should occur here. *)
@@ -495,6 +511,17 @@ and evalExp ( Literal(lit,_), vtab, ftab ) = lit
             val r2 = evalExp(e2, vtab, ftab)
 	in  evalAnd(r1, r2, pos)
 	end
+   
+  | evalExp ( Or(e1, e2, pos), vtab, ftab ) =
+        let val r1 = evalExp(e1, vtab, ftab)
+            val r2 = evalExp(e2, vtab, ftab)
+  	in  evalOr(r1, r2, pos)
+  	end
+    
+  | evalExp ( Not(e1, pos), vtab, ftab ) =
+        let val r1 = evalExp(e1, vtab, ftab)
+    in  evalNot(r1, pos)
+    end
 
     (* Task 2: Some evaluation of operators should occur here. *)
 (*
