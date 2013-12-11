@@ -1,0 +1,16 @@
+program test6;
+
+function test() : bool
+var
+    p : bool;
+begin
+    p := false;
+    return p + p;
+end;
+
+procedure main()
+    var x : bool;
+begin
+    x := test();
+    write(x);
+end;

@@ -1,0 +1,8 @@
+program test6;
+
+procedure main()
+var    
+    p : bool;
+begin
+    p := chr(read()) = read();
+end;
