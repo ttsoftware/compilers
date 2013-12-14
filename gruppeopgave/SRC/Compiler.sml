@@ -508,7 +508,7 @@ struct
                 val calc_and_check =
                     [Mips.LABEL (calc_name),
                      Mips.LW (dim_reg, arrptr, "0"),    (* loads current dim *)
-                     Mips.MUL (flat, dim_reg, ind_reg), 
+                     Mips.MUL (flat, flat, dim_reg), 
                      Mips.LW (ind_reg, SP, "0")]        (* loads current index *)
                      @ calc_out_of_bounds @
                     [Mips.ADD (flat, flat, ind_reg), 
