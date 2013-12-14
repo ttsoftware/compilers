@@ -455,7 +455,86 @@ struct
     | compileLVal( vtab : VTab, Index ((n,_),  []) : LVAL, pos : Pos ) =
         raise Error("variable "^"n"^" with empty index, at ", pos)
 
+    (* accepts array indexing for a[i_1, i_2 , ... , i_n]
+     * array was initialised with dimensions d_1, d_2, ... , d_m with rank m
+     *)
     | compileLVal( vtab : VTab, Index ((n,t),inds) : LVAL, pos : Pos ) =
+        ( case SymTab.lookup n vtab of
+            SOME mem => 
+              let
+                val rank = length inds
+                
+                (* Variables for generated MIPS code *)
+                val arrptr = "_arrptr_" ^ newName()            (* pointer to a *)
+                val ind_reg = "_indx_" ^ newName()             (* current index i_k *)
+                val dim_reg = "_dimx_" ^ newName()             (* current dimension d_k *)
+                val flat = "_flatIndx_" ^ newName()            (* flat index value *)
+                val ctr = "_ctr_" ^ newName()                  (* loop counter (init to rank) *)
+                val tmp = "_tmp_" ^ newName()                  (* tmp register to check bounds *)
+                val calc_name = "_calc_and_check_" ^ newName() (* label name for loop *)
+
+                (* Generates code for adding the indices to the stack *)
+                fun copy_to_stack ([],code,n) = (Mips.ADDI(SP, SP, makeConst (~rank*4)))::code 
+                  | copy_to_stack ((i::inds),code,n) = 
+                    let 
+                      val temp = "_temp_"^newName()
+                    in
+                      copy_to_stack(inds, 
+                        code @ (compileExp(vtab, i, temp)) @
+                        [Mips.ADD (ind_reg, "zero", temp),
+                         Mips.SW (ind_reg, SP, makeConst n)], 
+                      n+4)  
+                    end
+
+                (* Gets basic type of array (ie. int, bool or char) *)
+                fun get_basic_type (Array(a,bt)) = bt
+                  | get_basic_type _ = raise Error("Impossible!!!, at", pos)
+
+                (* Initiates variables *)
+                val init_code =
+                    [Mips.ADDI (arrptr, mem, "0"),
+                     Mips.ADDI (ind_reg, "zero", "0"),
+                     Mips.ADDI (flat, "zero", "0"),
+                     Mips.ADDI (ctr, "zero", makeConst rank)]
+
+                (* Checks if array index is out of bounds *)
+                val calc_out_of_bounds =
+                    [Mips.ADDI (tmp, ind_reg, "1"),
+                     Mips.SUB (tmp, dim_reg, tmp),
+                     Mips.SLTI (tmp, tmp, "0"),
+                     Mips.BNE (tmp, "zero", "_IllegalArrIndexError_")]
+
+                (* Loop: checks if each index is within bounds and calculates flat index *)
+                val calc_and_check =
+                    [Mips.LABEL (calc_name),
+                     Mips.LW (dim_reg, arrptr, "0"),    (* loads current dim *)
+                     Mips.MUL (flat, dim_reg, ind_reg), 
+                     Mips.LW (ind_reg, SP, "0")]        (* loads current index *)
+                     @ calc_out_of_bounds @
+                    [Mips.ADD (flat, flat, ind_reg), 
+                     Mips.ADDI (arrptr, arrptr, "4"),
+                     Mips.ADDI (SP, SP, "4"),
+                     Mips.ADDI (ctr, ctr, "-1"),
+                     Mips.BNE (ctr, "zero", calc_name)]
+
+                (* If basic type size is k, returns log2(k) (easier to calc later) *)
+                val element_size = case (get_basic_type t) of 
+                    Int => "2" | Bool => "0" | Char => "0"
+
+                (* Calculates the address of the array index *)
+                val get_address =
+                    [Mips.ADDI(arrptr, arrptr, makeConst (4*(rank-1))), (* skip the strides *)
+                     Mips.ADDI(flat, flat, "1"),                        (* zero-indexing *)
+                     Mips.SLL (flat, flat, element_size),
+                     Mips.ADD (arrptr, arrptr, flat)]
+              in
+                (copy_to_stack(inds,[],0) @
+                 init_code @
+                 calc_and_check @
+                 get_address,
+                 Mem arrptr)
+            end    
+          | NONE     => raise Error ("Unknown variable" ^ n, pos)    )    
         (*************************************************************)
         (*** TODO: IMPLEMENT for G-ASSIGNMENT, TASK 4              ***)
         (*** Sugested implementation STEPS:                        ***)
@@ -479,8 +558,6 @@ struct
         (***     Bonus question: can you implement it without      ***)
         (***                        using the stored strides?      ***)
         (*************************************************************)
-        raise Error( "indexed variables UNIMPLEMENTED, at ", pos)
-
 
   (* instr.s for one statement. exitLabel is end (for control flow jumps) *)
   and compileStmt( vtab, ProcCall (("write",_), [e], pos), _ ) =

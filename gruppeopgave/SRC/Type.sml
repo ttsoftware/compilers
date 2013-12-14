@@ -169,7 +169,7 @@ struct
                    LValue(Index((id,Array(r,t)),newinds),pos)
                  else
                    raise Error("ill-formed array indexing at ",pos)
-            | NONE => raise Error("in type check variable, var " ^id^"not in VTab, at",pos)
+            | _ => raise Error("in type check variable, var " ^id^"not in VTab, at",pos)
         end
         (*************************************************************)
         (*** TO DO: IMPLEMENT for G-ASSIGNMENT, TASK 4             ***)
@@ -336,15 +336,18 @@ struct
         (* function call to `new' uses expected type to infer the to-be-read result *)
     | typeCheckExp ( vtab, AbSyn.FunApp ("new", args, pos), etp ) =
         ( case expectedBasicType etp of
-            SOME btp => let 
-                          val typedargs = map (fn n => typeCheckExp(vtab, n, KnownType (BType Int))) args
-                          val types = map typeOfExp typedargs
-                          val rtp = Array ( length args, btp)
-                        in
-                          if List.all (fn n => typesEqual(BType Int, n)) types
-                          then FunApp(("new", (types, SOME rtp)), typedargs,pos)
-                          else raise Error("declared array dimensions are not integers, at ", pos)
-                        end
+            SOME btp => 
+              let 
+                val typedargs = map (fn n => typeCheckExp(vtab, n, KnownType (BType Int))) args
+                val types = map typeOfExp typedargs
+                val rtp = Array ( length args, btp)
+              in
+                if List.all (fn n => typesEqual(BType Int, n)) types
+                then 
+                  FunApp(("new", (types, SOME rtp)), typedargs,pos)
+                else 
+                  raise Error("declared array dimensions are not integers, at ", pos)
+              end
                         (*************************************************************)
                         (*** Suggested implementation STEPS:                       ***)
                         (***    1. type check recursively all `args', denote the   ***)
