@@ -157,6 +157,20 @@ struct
         )
 
     | typeCheckExp( vtab, AbSyn.LValue( AbSyn.Index(id, inds), pos ), _ ) =
+        let
+           val indices = length inds
+           val newinds = map (fn n=>typeCheckExp(vtab,n,KnownType (BType Int))) inds
+           val correctinds = List.all (fn n => typesEqual(BType Int, typeOfExp n)) newinds
+        in
+           case SymTab.lookup id vtab of
+              SOME (Array(r,t)) => 
+                 if indices > 0 andalso r = length inds andalso correctinds 
+                 then
+                   LValue(Index((id,Array(r,t)),newinds),pos)
+                 else
+                   raise Error("ill-formed array indexing at ",pos)
+            | _ => raise Error("in type check variable, var " ^id^"not in VTab, at",pos)
+        end
         (*************************************************************)
         (*** TO DO: IMPLEMENT for G-ASSIGNMENT, TASK 4             ***)
         (*** Suggested implementation STEPS:                       ***)
@@ -172,7 +186,6 @@ struct
         (***         LValue( Index ((id, id_tp), new_inds), pos )  ***)
         (***       where `new_inds' are the typed version of `inds'***)
         (*************************************************************)
-        raise Error( "in type check, indexed expression UNIMPLEMENTED, at ", pos)
 
       (* Must be modified to complete task 3 *)
     | typeCheckExp( vtab, AbSyn.Plus (e1, e2, pos), _ ) =
@@ -323,15 +336,18 @@ struct
         (* function call to `new' uses expected type to infer the to-be-read result *)
     | typeCheckExp ( vtab, AbSyn.FunApp ("new", args, pos), etp ) =
         ( case expectedBasicType etp of
-            SOME btp => let 
-                          val typedargs = map (fn n => typeCheckExp(vtab, n, KnownType (BType Int))) args
-                          val types = map typeOfExp typedargs
-                          val rtp = Array ( length args, btp)
-                        in
-                          if List.all (fn n => typesEqual(BType Int, n)) types
-                          then FunApp(("new", (types, SOME rtp)), typedargs,pos)
-                          else raise Error("bla", pos)
-                        end
+            SOME btp => 
+              let 
+                val typedargs = map (fn n => typeCheckExp(vtab, n, KnownType (BType Int))) args
+                val types = map typeOfExp typedargs
+                val rtp = Array ( length args, btp)
+              in
+                if List.all (fn n => typesEqual(BType Int, n)) types
+                then 
+                  FunApp(("new", (types, SOME rtp)), typedargs,pos)
+                else 
+                  raise Error("declared array dimensions are not integers, at ", pos)
+              end
                         (*************************************************************)
                         (*** Suggested implementation STEPS:                       ***)
                         (***    1. type check recursively all `args', denote the   ***)
