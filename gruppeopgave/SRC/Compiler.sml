@@ -443,6 +443,7 @@ struct
             @ [Mips.MOVE (makeConst reg,t1)] (* store in reg *)
             , maxreg)
       end
+
 (** TASK 5: You may want to create a function slightly similar to putArgs,
  *  but instead moving args back to registers. **)
 
@@ -463,6 +464,7 @@ struct
             SOME mem => 
               let
                 val rank = length inds
+                val strides = 4 * (rank - 1)
                 
                 (* Variables for generated MIPS code *)
                 val arrptr = "_arrptr_" ^ newName()            (* pointer to a *)
@@ -472,37 +474,42 @@ struct
                 val ctr = "_ctr_" ^ newName()                  (* loop counter (init to rank) *)
                 val tmp = "_tmp_" ^ newName()                  (* tmp register to check bounds *)
                 val calc_name = "_calc_and_check_" ^ newName() (* label name for loop *)
+                val str_sz = "_strides_" ^newName()            (* Number of strides (to skip) *)
 
                 (* Generates code for adding the indices to the stack *)
-                fun copy_to_stack ([],code,n) = (Mips.ADDI(SP, SP, makeConst (~rank*4)))::code 
-                  | copy_to_stack ((i::inds),code,n) = 
+                fun copy_to_stack ([],code,n,l) = (Mips.ADDI(SP,SP, makeConst(~4*l)))::code 
+                  | copy_to_stack (i::inds,code,n,l) = 
                     let 
                       val temp = "_temp_"^newName()
                     in
                       copy_to_stack(inds, 
                         code @ (compileExp(vtab, i, temp)) @
-                        [Mips.ADD (ind_reg, "zero", temp),
+                        [Mips.ADD (ind_reg, "0", temp),
                          Mips.SW (ind_reg, SP, makeConst n)], 
-                      n+4)  
+                      n+4,l)  
                     end
 
-                (* Gets basic type of array (ie. int, bool or char) *)
                 fun get_basic_type (Array(a,bt)) = bt
-                  | get_basic_type _ = raise Error("Impossible!!!, at", pos)
+                 |  get_basic_type _ = raise Error("Impossible!!!, ", pos)
+
+                (* If basic type size is k, returns log2(k) (easier to calc later) *)
+                val element_size = (case (get_basic_type t) of 
+                    Int => "2" | Bool => "0" | Char => "0")
 
                 (* Initiates variables *)
                 val init_code =
                     [Mips.ADDI (arrptr, mem, "0"),
-                     Mips.ADDI (ind_reg, "zero", "0"),
-                     Mips.ADDI (flat, "zero", "0"),
-                     Mips.ADDI (ctr, "zero", makeConst rank)]
+                     Mips.ADDI (ind_reg, "0", "0"),
+                     Mips.ADDI (flat, "0", "0"),
+                     Mips.ADDI (ctr, "0", makeConst rank),
+                     Mips.ADDI (str_sz, "0", makeConst strides)]
 
                 (* Checks if array index is out of bounds *)
                 val calc_out_of_bounds =
                     [Mips.ADDI (tmp, ind_reg, "1"),
                      Mips.SUB (tmp, dim_reg, tmp),
                      Mips.SLTI (tmp, tmp, "0"),
-                     Mips.BNE (tmp, "zero", "_IllegalArrIndexError_")]
+                     Mips.BNE (tmp, "0", "_IllegalArrIndexError_")]
 
                 (* Loop: checks if each index is within bounds and calculates flat index *)
                 val calc_and_check =
@@ -515,25 +522,21 @@ struct
                      Mips.ADDI (arrptr, arrptr, "4"),
                      Mips.ADDI (SP, SP, "4"),
                      Mips.ADDI (ctr, ctr, "-1"),
-                     Mips.BNE (ctr, "zero", calc_name)]
-
-                (* If basic type size is k, returns log2(k) (easier to calc later) *)
-                val element_size = case (get_basic_type t) of 
-                    Int => "2" | Bool => "0" | Char => "0"
+                     Mips.BNE (ctr, "0", calc_name)]
 
                 (* Calculates the address of the array index *)
                 val get_address =
-                    [Mips.ADDI(arrptr, arrptr, makeConst (4*(rank-1))), (* skip the strides *)
-                     Mips.ADDI(flat, flat, "1"),                        (* zero-indexing *)
+                    [Mips.ADD(arrptr, arrptr, str_sz),       (* skip the strides *)
+                     Mips.ADDI(flat, flat, "1"),             (* zero-indexing *)
                      Mips.SLL (flat, flat, element_size),
                      Mips.ADD (arrptr, arrptr, flat)]
               in
-                (copy_to_stack(inds,[],0) @
+                (copy_to_stack(inds,[],0,rank) @
                  init_code @
                  calc_and_check @
                  get_address,
                  Mem arrptr)
-            end    
+              end    
           | NONE     => raise Error ("Unknown variable" ^ n, pos)    )    
         (*************************************************************)
         (*** TODO: IMPLEMENT for G-ASSIGNMENT, TASK 4              ***)
@@ -611,10 +614,15 @@ struct
         (** TASK 5: Extend this to handle the extra needs of procedures.  Procedures
          * must also have code to put variables back into the registers used to call
          * the procedure. **)
+         (*ProcCall ((id, (type list, return type)), exp list, pos)*)
         | ProcCall ((n,_), es, p) => 
           let
               val (mvcode, maxreg) = putArgs es vtable minReg
           in
+              (*puts all the args in registers and calls the function with
+                a list of the registers*)
+              (*es is a list of expressions
+                2 - maxreg is all the named registers containing the arguments*)
               mvcode @ [Mips.JAL (n, List.tabulate (maxreg, fn reg => makeConst reg))]
           end
         | Assign (lv, e, p) =>
@@ -833,6 +841,7 @@ struct
           Mips.LW ("5", SP, "4"),
           Mips.ADDI(SP,SP,"8"),
           Mips.JR (RA,[]) ]
+
 
       @  (* fixed error code for indexing errors *)
          [
