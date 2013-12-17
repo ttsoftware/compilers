@@ -489,12 +489,12 @@ struct
                       n+4,l)  
                     end
 
-                fun get_basic_type (Array(a,bt)) = bt
-                 |  get_basic_type _ = raise Error("Impossible!!!, ", pos)
-
                 (* If basic type size is k, returns log2(k) (easier to calc later) *)
-                val element_size = (case (get_basic_type t) of 
-                    Int => "2" | Bool => "0" | Char => "0")
+                fun element_size w = (case w of 
+                    (Array(a,Int)) => "2" 
+                  | (Array(a,Bool)) => "0" 
+                  | (Array(a,Char)) => "0"
+                  | _ => raise Error("Impossible!!!, ", pos))
 
                 (* Initiates variables *)
                 val init_code =
@@ -519,16 +519,16 @@ struct
                      Mips.LW (ind_reg, SP, "0")]        (* loads current index *)
                      @ calc_out_of_bounds @
                     [Mips.ADD (flat, flat, ind_reg), 
-                     Mips.ADDI (arrptr, arrptr, "4"),
-                     Mips.ADDI (SP, SP, "4"),
+                     Mips.ADDI (arrptr, arrptr, "4"),   (* points to next index *)
+                     Mips.ADDI (SP, SP, "4"),           (* points to next dim *)
                      Mips.ADDI (ctr, ctr, "-1"),
                      Mips.BNE (ctr, "0", calc_name)]
 
                 (* Calculates the address of the array index *)
                 val get_address =
                     [Mips.ADD(arrptr, arrptr, str_sz),       (* skip the strides *)
-                     Mips.ADDI(flat, flat, "1"),             (* zero-indexing *)
-                     Mips.SLL (flat, flat, element_size),
+                     Mips.LW(arrptr,arrptr,"0"),
+                     Mips.SLL (flat, flat, element_size t),
                      Mips.ADD (arrptr, arrptr, flat)]
               in
                 (copy_to_stack(inds,[],0,rank) @
@@ -619,10 +619,6 @@ struct
           let
               val (mvcode, maxreg) = putArgs es vtable minReg
           in
-              (*puts all the args in registers and calls the function with
-                a list of the registers*)
-              (*es is a list of expressions
-                2 - maxreg is all the named registers containing the arguments*)
               mvcode @ [Mips.JAL (n, List.tabulate (maxreg, fn reg => makeConst reg))]
           end
         | Assign (lv, e, p) =>
@@ -671,14 +667,8 @@ struct
     then (savecode, restorecode, offset)  (* done *)
     else stackSave (currentReg+1)
                    maxReg
-                   (Mips.SW (makeConst currentReg,
-                                 SP,
-                                 makeConst offset)
-                    :: savecode) (* save register *)
-                   (Mips.LW (makeConst currentReg,
-                                 SP,
-                                 makeConst offset)
-                    :: restorecode) (* restore register *)
+                   (Mips.SW (makeConst currentReg,SP,makeConst offset):: savecode) (* save register *)
+                   (Mips.LW (makeConst currentReg,SP,makeConst offset):: restorecode) (* restore register *)
                    (offset+4) (* adjust offset *)
 
   (* add function arguments to symbol table *)
@@ -694,12 +684,15 @@ struct
                in ((vname, makeConst nextReg) :: pairs2, vtable2)
                end
 
+   (*isProc : bool, fname : string, args : Dec list, block : Stmt list?, pos : Pos*)
+   (* each formal parameter (vname) is bound to a register 
+      vtable is a table that binds variable names to "symbolic registers" *)
   and compileF (isProc, fname, args, block, pos) =
       (* at this point, we do not care about the return type (or no return) *)
       let (* make a vtable from bound formal parameters,
                then evaluate expression in this context, return it *)
           (* arguments passed in registers, "move" into local vars.
-             Code generator imposes max. 13 arguments (maxCaller-minReg)
+             Code generator imposes max. 14 arguments (maxCaller-minReg+1)
            *)
           val () = if length args <= maxCaller - minReg + 1 then ()
                    else raise Error (fname ^ ": too many arguments (max "
@@ -718,6 +711,7 @@ struct
                                      (* 2 contains return val*)
           val (savecode, restorecode, offset) = (* save/restore callee-saves *)
               stackSave (maxCaller+1) maxr [] [] (4*spilled)
+
         in  [Mips.COMMENT ("Function " ^ fname),
              Mips.LABEL fname,       (* function label *)
              Mips.SW (RA, SP, "-4"), (* save return address *)
