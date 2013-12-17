@@ -3,7 +3,9 @@ program proctest;
 procedure f(a : int; b : int)
 begin
     a := a + 1;
+    write(a);
     b := b + 1;
+    write(b);
 end;
 
 procedure main()

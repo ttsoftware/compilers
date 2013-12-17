@@ -304,8 +304,18 @@ and callFun ( (rtp : Type option, fid : string, fargs : Dec list, body : StmtBlo
             let val new_vtab = bindTypeIds(fargs, aargs, fid, pdcl, pcall)
                 val res  = execBlock( body, new_vtab, ftab )
             in  ( case (rtp, res) of
-                    (NONE  , _     ) => NONE (* Procedure, hence modify this code for TASK 5. *) 
-
+                    (NONE , _) =>
+                    let 
+                        fun call_args [] [] = NONE
+                          | call_args (x::xs) (y::ys) =
+                              let 
+                                  val hitler = updateOuterVtable vtab new_vtab (x, y)
+                              in
+                                  call_args xs ys
+                              end
+                    in 
+                        call_args aexps fargs  
+                    end
                   | (SOME t, SOME r) => if   typesEqual(t, typeOfVal r) 
                                         then SOME r
                                         else raise Error("in call fun: result does " ^
@@ -321,8 +331,18 @@ and callFun ( (rtp : Type option, fid : string, fargs : Dec list, body : StmtBlo
  * result requires that argument expressions are variable names, i.e. expressions like
  * '2 + x' do not work, since '2 * x' is not an LValue variable name.
  *)
-and updateOuterVtable vtabOuter vtabInner (out_exp, in_arg) = ()
-(* Implement this function to complete TASK 5 in the interpreter. *)
+and updateOuterVtable vtabOuter vtabInner (TpAbSyn.LValue (lval1, pos1), TpAbSyn.Dec ((id2,tp), pos2)) = 
+        let 
+            val lenin = case lval1 of 
+                Var((id,tp)) => id
+              | Index((id,tp),e) => id
+              | _ => raise Error("SML error, pattern matching failed at ", pos1)
+            val () = (print ("lenin: " ^ lenin ^ ", id2: " ^ id2 ^ "\n"))
+        in
+            case (SymTab.lookup lenin vtabOuter, SymTab.lookup id2 vtabInner) of
+                    (SOME x, SOME y) => x := !y
+                  | (_, _)        => raise Error("Procedure argument not in caller", pos1)
+        end
 
 
 and mkNewArr( btp : BasicType, shpval : Value list, pos : Pos ) : Value =

@@ -28,7 +28,7 @@ struct
       BType of BasicType
     | Array of int * BasicType
 
-  type  Ident    = string  * Type
+  type Ident     = string * Type
   type Signature = Type list * Type option
   type FIdent    = string * Signature
 
