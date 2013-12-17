@@ -11,6 +11,8 @@ begin
     N   := 100;
     res := { { 'h', 'e', 'l', 'l', 'o' }, {'w', 'o', 'r', 'l', 'd'} };
 
+//dim: 2 5 5
+
     // Print `res` to stdout
     write(" { ");
     i := 0;

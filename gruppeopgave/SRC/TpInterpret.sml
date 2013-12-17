@@ -313,6 +313,7 @@ and callFun ( (rtp : Type option, fid : string, fargs : Dec list, body : StmtBlo
                               in
                                   call_args xs ys
                               end
+                          | call_args _ _ = raise Error("Number of functions args does not match declaration, at ", pdcl)
                     in 
                         call_args aexps fargs  
                     end
@@ -332,18 +333,15 @@ and callFun ( (rtp : Type option, fid : string, fargs : Dec list, body : StmtBlo
  * '2 + x' do not work, since '2 * x' is not an LValue variable name.
  *)
 and updateOuterVtable vtabOuter vtabInner (TpAbSyn.LValue (lval1, pos1), TpAbSyn.Dec ((id2,tp), pos2)) = 
-        let 
-            val lenin = case lval1 of 
-                Var((id,tp)) => id
-              | Index((id,tp),e) => id
-              | _ => raise Error("SML error, pattern matching failed at ", pos1)
-            val () = (print ("lenin: " ^ lenin ^ ", id2: " ^ id2 ^ "\n"))
-        in
-            case (SymTab.lookup lenin vtabOuter, SymTab.lookup id2 vtabInner) of
-                    (SOME x, SOME y) => x := !y
-                  | (_, _)        => raise Error("Procedure argument not in caller", pos1)
-        end
-
+     let val lenin = (case lval1 of 
+                Var(id,tp) => id
+              | Index((id,tp),e) => id)
+     in
+         case (SymTab.lookup lenin vtabOuter, SymTab.lookup id2 vtabInner) of
+              (SOME x, SOME y) => x := !y
+             | _               => raise Error("Procedure argument not in caller", pos1)
+     end
+ | updateOuterVtable _ _ _ = raise Fail("Internal type error, see updateOuterVtable. \n")
 
 and mkNewArr( btp : BasicType, shpval : Value list, pos : Pos ) : Value =
         let val shape  = map ( fn d => case d of
