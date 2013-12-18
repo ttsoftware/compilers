@@ -444,6 +444,7 @@ struct
             , maxreg)
       end
 
+  (* Swap temporary registers with caller registers, after the procedure has finished *)
   and popArgs (e::es) vtable reg ((Mips.ORI(rd, rs, v))::ts) =
         let 
             val code = compileExp(vtable, e, rs) @ popArgs es vtable (reg+1) ts
@@ -452,9 +453,6 @@ struct
         end
     | popArgs es vtable reg (t::ts) = popArgs es vtable reg ts
     | popArgs _ vtable reg _ = []
-        
-  (* move args back to caller registers *)
-
 
   and compileLVal( vtab : VTab, Var (n,_) : LVAL, pos : Pos ) : Mips.mips list * Location =
         ( case SymTab.lookup n vtab of
