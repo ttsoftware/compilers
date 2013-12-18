@@ -360,7 +360,7 @@ and updateOuterVtable vtabOuter vtabInner (TpAbSyn.LValue (lval1, pos1), TpAbSyn
               (SOME x, SOME y) => x := !y
              | _               => raise Error("Procedure argument not in caller", pos1)
      end
- | updateOuterVtable _ _ _ = raise Fail("Internal type error, see updateOuterVtable. \n")
+ | updateOuterVtable _ _ _ = ()
 
 and mkNewArr( btp : BasicType, shpval : Value list, pos : Pos ) : Value =
         let val shape  = map ( fn d => case d of
