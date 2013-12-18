@@ -1,20 +1,77 @@
 program proctest;
 
-procedure f(a : int; b : int)
+procedure f(a : int; 
+            b : int)
 begin
     a := a + 1;
-    write(a);
+    b := b + 4;
+end;
+
+procedure g(a : int;
+            b : int)
+begin
+    a := a + 2;
+    b := b + 3;
+end;
+
+procedure h(a : int;
+            b : int)
+begin
+    f(a, b);
+    a := a + 1;
     b := b + 1;
-    write(b);
+end;
+
+procedure j(a : array of array of int;
+            b : array of array of int)
+begin
+    a[0, 0] := 2;
+    b[0, 0] := 3;
+end;
+
+function k(a : int;
+           b : int) : int
+begin
+    a := a + 10;
+    b := b + 5;
+    return b;
 end;
 
 procedure main()
 var
     x : int;
     y : int;
+    z : array of array of int;
+    q : array of array of int;
+    r : int;
 begin
    x := 2;
    y := 3;
    f(x, y);
-   write(x); write(' '); write(y);
+   write(x = 3);
+   write(y = 7);
+   g(x, y);
+   write(x = 5);
+   write(y = 10);
+   h(x, y);
+   write(x = 7);
+   write(y = 15);
+
+   z := new(2, 2);
+   q := new(2, 2);
+
+   z[0, 0] := 1;
+   q[0, 0] := 4;
+
+   j(z, q);
+
+   write(z[0,0] = 2);
+   write(q[0,0] = 3);
+
+   r := k(z[0,0], q[0,0]);
+
+   write(r = 8);
+   write(z[0,0] = 2);
+
+   f(1, 1);
 end;
