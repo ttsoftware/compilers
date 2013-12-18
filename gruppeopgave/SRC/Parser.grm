@@ -38,7 +38,7 @@
 %type <AbSyn.Stmt list> SBlock
 %type <AbSyn.Stmt list> StmtSeq
 %type <AbSyn.Stmt> Stmt
-%type <AbSyn.LVAL> LVal
+%type <AbSyn.LVAL*AbSyn.Pos> LVal
 %type <AbSyn.Exp option> Ret
 %type <AbSyn.Exp> Exp
 %type <AbSyn.Dec list> PDecl Params
@@ -94,13 +94,13 @@ Stmt :
   /* prec gives precedence as LowPrec */
   | TWhile Exp TDo Block                       { AbSyn.While ($2, $4, $1) }
   | TReturn Ret                                { AbSyn.Return ($2, $1) }
-  | LVal TAssign Exp                           { AbSyn.Assign ($1, $3, $2) }
+  | LVal TAssign Exp                           { AbSyn.Assign (#1 $1, $3, $2) }
 ;
 
 /* L-VALUES AND EXPRESSIONS */
 LVal :
-    TId                                        { AbSyn.Var (#1 $1) }
-  | TId TLBracket Exps TRBracket               { AbSyn.Index (#1 $1, $3) }
+    TId                                        { (AbSyn.Var (#1 $1), #2 $1) }
+  | TId TLBracket Exps TRBracket               { (AbSyn.Index (#1 $1, $3), #2 $1) }
 ;
 
 Ret :
@@ -114,7 +114,7 @@ Exp :
   | TCLit                                      { AbSyn.Literal (AbSyn.BVal(AbSyn.Chr(#1 $1)), #2 $1) } 
   | TSLit                                      { AbSyn.StrLit (#1 $1, #2 $1) }
   | TLCurly Exps TRCurly                       { AbSyn.ArrLit ($2,$1) }
-  | LVal                                       { AbSyn.LValue ($1, (0,0)) }
+  | LVal                                       { AbSyn.LValue (#1 $1, #2 $1) }
   | TNot Exp                                   { AbSyn.Not ($2, $1) }
   | Exp TPlus Exp                              { AbSyn.Plus ($1, $3, $2) }
   | Exp TMinus Exp                             { AbSyn.Minus ($1, $3, $2) }
