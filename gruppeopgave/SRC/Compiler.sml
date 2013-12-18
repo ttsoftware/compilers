@@ -454,27 +454,20 @@ struct
                 Mips.ORI (rd, rs, v) => 
                   rs
               | _ => 
-                  raise Error ("unknown mips command", (~1, ~1))
+                  raise Error("Invalid MIPS command", (~1, ~1))
 
             val code = compileExp(vtable, e, t1) @ popArgs es vtable (reg+1) ts
         in  
             code @ [Mips.MOVE (t1, makeConst reg)]
         end
-
+        
   (* move args back to caller registers *)
   and replaceRegisters [] = []
     | replaceRegisters (m::ms) = 
         let 
             val vyacheslav = case m of 
                 Mips.ORI (rd, rs, v) =>
-                    let
-                        val brezhnev = not (String.isPrefix "$" rd)
-                    in 
-                        (* if (Mips.numerical rd) then *)
-                            (Mips.ORI (rs, rd, v))::(replaceRegisters ms)
-                        (*else
-                            replaceRegisters ms*)
-                    end
+                    (Mips.ORI (rs, rd, v))::(replaceRegisters ms)
               | _ => 
                     replaceRegisters ms
         in 
