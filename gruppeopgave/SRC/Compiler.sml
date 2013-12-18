@@ -434,19 +434,52 @@ struct
         ([], reg)
     | putArgs (e::es) vtable reg =
       let
-          val t1 = "_funarg_"^newName()
+          val t1 = "_funarg_" ^ newName()
           val code1 = compileExp(vtable, e, t1)
           val (code2, maxreg) = putArgs es vtable (reg+1)
       in
           (   code1                          (* compute arg1 *)
             @ code2                          (* compute rest *)
-            @ [Mips.MOVE (makeConst reg,t1)] (* store in reg *)
+            @ [Mips.MOVE (makeConst reg, t1)] (* store in reg *)
             , maxreg)
       end
 
-(** TASK 5: You may want to create a function slightly similar to putArgs,
- *  but instead moving args back to registers. **)
+  and popArgs [] vtable reg _ =
+        []
+    | popArgs _ vtable reg [] =
+        []
+    | popArgs (e::es) vtable reg (t::ts) =
+        let 
+            val t1 = case t of 
+                Mips.ORI (rd, rs, v) => 
+                  rs
+              | _ => 
+                  raise Error ("unknown mips command", (~1, ~1))
 
+            val code = compileExp(vtable, e, t1) @ popArgs es vtable (reg+1) ts
+        in  
+            code @ [Mips.MOVE (t1, makeConst reg)]
+        end
+
+  (* move args back to caller registers *)
+  and replaceRegisters [] = []
+    | replaceRegisters (m::ms) = 
+        let 
+            val vyacheslav = case m of 
+                Mips.ORI (rd, rs, v) =>
+                    let
+                        val brezhnev = not (String.isPrefix "$" rd)
+                    in 
+                        (* if (Mips.numerical rd) then *)
+                            (Mips.ORI (rs, rd, v))::(replaceRegisters ms)
+                        (*else
+                            replaceRegisters ms*)
+                    end
+              | _ => 
+                    replaceRegisters ms
+        in 
+            vyacheslav
+        end
 
   and compileLVal( vtab : VTab, Var (n,_) : LVAL, pos : Pos ) : Mips.mips list * Location =
         ( case SymTab.lookup n vtab of
@@ -618,9 +651,14 @@ struct
          (*ProcCall ((id, (type list, return type)), exp list, pos)*)
         | ProcCall ((n,_), es, p) => 
           let
-              val (mvcode, maxreg) = putArgs es vtable minReg
+              val (mvcode, maxreg) = putArgs es vtable minReg              
+              val prod_codes = popArgs es vtable minReg mvcode
+
+              val new_mvcode = mvcode @ [Mips.JAL (n, List.tabulate (maxreg, fn reg => makeConst reg))]
+              
+              val codes = new_mvcode @ prod_codes
           in
-              mvcode @ [Mips.JAL (n, List.tabulate (maxreg, fn reg => makeConst reg))]
+              codes
           end
         | Assign (lv, e, p) =>
           let val (codeL,loc) = compileLVal(vtable, lv, p)
@@ -705,14 +743,18 @@ struct
            * i.e. something similar to 'argcode', just the other way round.  Use the
            * value of 'isProc' to determine whether you are dealing with a function
            * or a procedure. **)
+          
+          val new_argcode = if isProc andalso (not (fname = "main")) then (replaceRegisters argcode) 
+                            else []
+
           val body = compileStmts block vtable (fname ^ "_exit")
           val (body1, _, maxr, spilled) =  (* call register allocator *)
-              RegAlloc.registerAlloc ( argcode @ body )
+              RegAlloc.registerAlloc ( argcode @ body @ new_argcode )
                                      ["2"] minReg maxCaller maxReg 0
                                      (* 2 contains return val*)
           val (savecode, restorecode, offset) = (* save/restore callee-saves *)
               stackSave (maxCaller+1) maxr [] [] (4*spilled)
-
+        
         in  [Mips.COMMENT ("Function " ^ fname),
              Mips.LABEL fname,       (* function label *)
              Mips.SW (RA, SP, "-4"), (* save return address *)
