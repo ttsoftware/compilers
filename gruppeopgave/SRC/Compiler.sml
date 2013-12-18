@@ -506,9 +506,10 @@ struct
 
                 (* Checks if array index is out of bounds *)
                 val calc_out_of_bounds =
-                    [Mips.ADDI (tmp, ind_reg, "1"),
-                     Mips.SUB (tmp, dim_reg, tmp),
-                     Mips.SLTI (tmp, tmp, "0"),
+                    [Mips.SUB (tmp, dim_reg, ind_reg),
+                     Mips.SLT (dim_reg, dim_reg, tmp),
+                     Mips.SLTI (tmp, tmp, "1"),
+                     Mips.OR (tmp, tmp, dim_reg),
                      Mips.BNE (tmp, "0", "_IllegalArrIndexError_")]
 
                 (* Loop: checks if each index is within bounds and calculates flat index *)
