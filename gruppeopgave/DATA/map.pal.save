@@ -1,0 +1,19 @@
+program map;
+
+function map (f, x) : array of array of char
+var
+    y := new(len(0,x), len(1,x));
+    i := 0;
+    ii := 0;
+begin
+    while (i < len(0,x)) do
+	begin
+        while (ii < len(1,x)) do
+		begin            	
+		y[i, ii] := f(x[i, ii]);
+            	ii := ii+1;
+        	end;
+        	i := i+1;
+	end;
+    return y;
+end;

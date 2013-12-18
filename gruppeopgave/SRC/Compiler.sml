@@ -444,6 +444,7 @@ struct
             , maxreg)
       end
 
+  (* Swap temporary registers with caller registers, after the procedure has finished *)
   and popArgs [] vtable reg _ =
         []
     | popArgs _ vtable reg [] =
@@ -460,8 +461,8 @@ struct
         in  
             code @ [Mips.MOVE (t1, makeConst reg)]
         end
-        
-  (* move args back to caller registers *)
+
+  (* Swap temporary registers with caller registers, at the end of the procedure call *)
   and replaceRegisters [] = []
     | replaceRegisters (m::ms) = 
         let 
@@ -653,7 +654,7 @@ struct
           let
               val (mvcode, maxreg) = putArgs es vtable minReg              
               val prod_codes = popArgs es vtable minReg mvcode
-
+              
               val new_mvcode = mvcode @ [Mips.JAL (n, List.tabulate (maxreg, fn reg => makeConst reg))]
               
               val codes = new_mvcode @ prod_codes
