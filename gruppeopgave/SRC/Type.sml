@@ -262,6 +262,17 @@ struct
             else raise Error("in type check less exp, argument types do not match "^
                              pp_type tp1^" <> "^pp_type tp2^" at ", pos)
         end
+        
+        (*
+             _         _______  _______ _________
+            ( (    /|(  ___  )/ ___   )\__   __/
+            |  \  ( || (   ) |\/   )  |   ) (   
+            |   \ | || (___) |    /   )   | |   
+            | (\ \) ||  ___  |   /   /    | |   
+            | | \   || (   ) |  /   /     | |   
+            | )  \  || )   ( | /   (_/\___) (___
+            |/    )_)|/     \|(_______/\_______/
+        *)
 
       (* Must be modified to complete task 3 *)
     | typeCheckExp ( vtab, AbSyn.And (e1, e2, pos), _ ) =
