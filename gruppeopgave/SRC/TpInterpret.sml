@@ -301,6 +301,25 @@ and callFun ( (rtp : Type option, fid : string, fargs : Dec list, body : StmtBlo
           (***               2.1 get its final value in callee from `new_vtab' and     ***)
           (***               2.2 update the corresponding entry in `vtab'              ***)
           (*******************************************************************************)
+          (*
+                                     xx,
+                                    xxxx;
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxx     xxx     xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   xxxxxxxxxxxxxxxxxxxxxxxxxxxx,   ;xxx;   .xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxx   xxxxx   xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+     `xxxxxxxxxxxxxxxxxxxxxxxxxxx..xxxxx..xxxxxxxxxxxxxxxxxxxxxxxxxxx`
+       xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+         ^xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+          `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx~
+                           `xxxxxxxxxxxxxxxxxxxx
+                            `xxxxxxxxxxxxxxxxx~
+                              `xxxxxxxxxxxxx~
+                                  xxxxxxx
+                                   xx xx
+                                   x   x
+          
+          *)
             let val new_vtab = bindTypeIds(fargs, aargs, fid, pdcl, pcall)
                 val res  = execBlock( body, new_vtab, ftab )
             in  ( case (rtp, res) of
