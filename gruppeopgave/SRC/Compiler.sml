@@ -444,35 +444,17 @@ struct
             , maxreg)
       end
 
-  and popArgs [] vtable reg _ =
-        []
-    | popArgs _ vtable reg [] =
-        []
-    | popArgs (e::es) vtable reg (t::ts) =
+  and popArgs (e::es) vtable reg ((Mips.ORI(rd, rs, v))::ts) =
         let 
-            val t1 = case t of 
-                Mips.ORI (rd, rs, v) => 
-                  rs
-              | _ => 
-                  raise Error("Invalid MIPS command", (~1, ~1))
-
-            val code = compileExp(vtable, e, t1) @ popArgs es vtable (reg+1) ts
+            val code = compileExp(vtable, e, rs) @ popArgs es vtable (reg+1) ts
         in  
-            code @ [Mips.MOVE (t1, makeConst reg)]
+            code @ [Mips.MOVE (rs, makeConst reg)]
         end
+    | popArgs es vtable reg (t::ts) = popArgs es vtable reg ts
+    | popArgs _ vtable reg _ = []
         
   (* move args back to caller registers *)
-  and replaceRegisters [] = []
-    | replaceRegisters (m::ms) = 
-        let 
-            val vyacheslav = case m of 
-                Mips.ORI (rd, rs, v) =>
-                    (Mips.ORI (rs, rd, v))::(replaceRegisters ms)
-              | _ => 
-                    replaceRegisters ms
-        in 
-            vyacheslav
-        end
+
 
   and compileLVal( vtab : VTab, Var (n,_) : LVAL, pos : Pos ) : Mips.mips list * Location =
         ( case SymTab.lookup n vtab of
@@ -653,12 +635,11 @@ struct
           let
               val (mvcode, maxreg) = putArgs es vtable minReg              
               val prod_codes = popArgs es vtable minReg mvcode
-
-              val new_mvcode = mvcode @ [Mips.JAL (n, List.tabulate (maxreg, fn reg => makeConst reg))]
-              
-              val codes = new_mvcode @ prod_codes
+              val new_mvcode = mvcode
+                  @ [Mips.JAL (n, List.tabulate (maxreg, fn reg => makeConst reg))]
+                  @ prod_codes
           in
-              codes
+              new_mvcode
           end
         | Assign (lv, e, p) =>
           let val (codeL,loc) = compileLVal(vtable, lv, p)
@@ -743,10 +724,10 @@ struct
            * i.e. something similar to 'argcode', just the other way round.  Use the
            * value of 'isProc' to determine whether you are dealing with a function
            * or a procedure. **)
-          
-          val new_argcode = if isProc andalso (not (fname = "main")) then (replaceRegisters argcode) 
-                            else []
-
+          val new_argcode = 
+              if isProc andalso (not (fname = "main")) 
+              then map (fn (vname, reg) => Mips.MOVE (reg, vname)) movePairs
+              else []
           val body = compileStmts block vtable (fname ^ "_exit")
           val (body1, _, maxr, spilled) =  (* call register allocator *)
               RegAlloc.registerAlloc ( argcode @ body @ new_argcode )
