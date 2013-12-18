@@ -125,7 +125,7 @@ Exp :
   | Exp TAnd Exp                               { AbSyn.And ($1, $3, $2) }
   | Exp TOr Exp                                { AbSyn.Or ($1, $3, $2) }
   | TLParen Exp TRParen                        { $2 }
-  | TId TLParen CallParams TRParen             { AbSyn.FunApp (#1 $1, $3, # 2$1) }
+  | TId TLParen CallParams TRParen             { AbSyn.FunApp (#1 $1, $3, #2 $1) }
 ;
 
 /* VARIABLE AND PARAMETER DECLARATIONS, TYPES */

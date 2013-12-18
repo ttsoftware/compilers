@@ -619,7 +619,7 @@ val d__2__ = peekVal 2 : AbSyn.Pos
 val d__3__ = peekVal 1 : AbSyn.Exp list
 val d__4__ = peekVal 0 : AbSyn.Pos
 in
-( AbSyn.FunApp (#1 (d__1__), (d__3__), # 2(d__1__)) ) end : AbSyn.Exp))
+( AbSyn.FunApp (#1 (d__1__), (d__3__), #2 (d__1__)) ) end : AbSyn.Exp))
 ;
 (* Rule 40, file Parser.grm, line 133 *)
 val _ = update_ yyact 40
