@@ -34,7 +34,9 @@ begin
    u := 1;
    v := 1;
    w := false;
-   f(x,y,r,s,3+4,u,v,z,w);
+   
+   f(x,y,r,s,t,u,v,z,w);
+
    write(x = 'b');
    write(y = 'a');
    write(z = 'c');

@@ -444,14 +444,15 @@ struct
       end
 
   (* Swap temporary registers with caller registers, after the procedure has finished *)
-  and popArgs vtable reg ((Mips.ORI(rd, rs, v))::ts) =
+  and popArgs (TpAbSyn.LValue(lval, pos)::es) vtable reg ((Mips.ORI(rd, rs, v))::ts) =
         let 
-            val code = popArgs vtable (reg+1) ts
+            val code = popArgs es vtable (reg+1) ts
         in  
             code @ [Mips.MOVE (rs, makeConst reg)]
         end
-    | popArgs vtable reg (t::ts) = popArgs vtable reg ts
-    | popArgs vtable reg _ = []
+    | popArgs (e::es) vtable reg (t::ts) = popArgs es vtable reg ts
+    | popArgs _ vtable reg [] = []
+    | popArgs [] vtable reg _ = []
 
   and compileLVal( vtab : VTab, Var (n,_) : LVAL, pos : Pos ) : Mips.mips list * Location =
         ( case SymTab.lookup n vtab of
@@ -560,7 +561,7 @@ struct
         (***     isn't stored in the metadata.                     ***)
         (***  4. Find the address of the element in memory by      ***)
         (***     combining the flat index, the basic element type  ***)
-        (***     and the pointer to the array.                     ***)
+        (***     and the pointer to the array.                      ***)
         (***  5. Concat all the generated code and return it       ***)
         (***     with the register containing the final address    ***)
         (***     of the element.                                   ***)
@@ -630,8 +631,8 @@ struct
          *)
         | ProcCall ((n,_), es, p) => 
           let
-              val (mvcode, maxreg) = putArgs es vtable minReg              
-              val prod_codes = popArgs vtable minReg mvcode
+              val (mvcode, maxreg) = putArgs es vtable minReg
+              val prod_codes = popArgs es vtable minReg mvcode
               val new_mvcode = mvcode
                   @ [Mips.JAL (n, List.tabulate (maxreg, fn reg => makeConst reg))]
                   @ prod_codes
