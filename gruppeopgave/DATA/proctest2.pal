@@ -1,0 +1,47 @@
+program proctest;
+
+procedure f(a : char; b : char; c : int; d : int; e : int; f : int; g : int; h : char; i : bool)
+begin
+    a := 'b';
+    b := 'a';
+    c := 2;
+    d := 3;
+    e := 4;
+    f := 5;
+    g := 6;
+    h := 'c';
+    i := true;
+end;
+
+procedure main()
+var
+    x : char;
+    y : char;
+    z : char;
+    r : int;
+    s : int;
+    t : int;
+    u : int;
+    v : int;
+    w : bool;
+begin
+   x := 'q';
+   y := 'w';
+   z := 'e';
+   r := 1;
+   s := 1;
+   t := 1;
+   u := 1;
+   v := 1;
+   w := false;
+   f(x,y,r,s,3+4,u,v,z,w);
+   write(x = 'b');
+   write(y = 'a');
+   write(z = 'c');
+   write(r = 2);
+   write(s = 3);
+   write(u = 5);
+   write(v = 6);
+   write(w =true);
+end;
+
