@@ -1,0 +1,34 @@
+\select@language {english}
+\contentsline {section}{Introduction}{2}
+\contentsline {section}{Task 1}{2}
+\contentsline {subsection}{Parser.grm}{2}
+\contentsline {subsubsection}{Terminals}{2}
+\contentsline {subsubsection}{Precedence Rules}{2}
+\contentsline {subsubsection}{Non-Terminals}{3}
+\contentsline {subsubsection}{Grammar}{3}
+\contentsline {subsubsection}{Program structure}{4}
+\contentsline {subsubsection}{Statements, Values and Expressions}{4}
+\contentsline {subsubsection}{Parameters and Procedures}{4}
+\contentsline {subsection}{Driver.sml}{4}
+\contentsline {subsection}{Lexer.lex}{5}
+\contentsline {section}{Task 2}{5}
+\contentsline {subsection}{TpAbSyn.sml}{5}
+\contentsline {subsection}{TpInterpret.sml}{5}
+\contentsline {subsection}{Type.sml}{5}
+\contentsline {subsection}{Compiler.sml}{6}
+\contentsline {section}{Task 3}{6}
+\contentsline {subsection}{Type.sml}{6}
+\contentsline {section}{Task 4}{7}
+\contentsline {subsection}{Type.sml}{7}
+\contentsline {subsection}{Compiler.sml}{7}
+\contentsline {section}{Task 5}{8}
+\contentsline {subsection}{TpInterpreter.sml}{8}
+\contentsline {subsection}{Compiler.sml}{8}
+\contentsline {section}{Testing}{9}
+\contentsline {section}{Appendix A. Parser.grm}{10}
+\contentsline {section}{Appendix B. Driver.sml}{15}
+\contentsline {section}{Appendix C. TpAbSyn.sml}{16}
+\contentsline {section}{Appendix D. TpInterpret.sml}{17}
+\contentsline {section}{Appendix E. Type.sml}{19}
+\contentsline {section}{Appendix F. Compiler.sml}{22}
+\contentsline {section}{Appendix G. Testing}{27}
