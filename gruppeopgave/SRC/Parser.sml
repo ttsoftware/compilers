@@ -442,18 +442,18 @@ in
 (* Rule 18, file Parser.grm, line 97 *)
 val _ = update_ yyact 18
 (fn () => repr(let
-val d__1__ = peekVal 2 : AbSyn.LVAL
+val d__1__ = peekVal 2 : AbSyn.LVAL*AbSyn.Pos
 val d__2__ = peekVal 1 : AbSyn.Pos
 val d__3__ = peekVal 0 : AbSyn.Exp
 in
-( AbSyn.Assign ((d__1__), (d__3__), (d__2__)) ) end : AbSyn.Stmt))
+( AbSyn.Assign (#1 (d__1__), (d__3__), (d__2__)) ) end : AbSyn.Stmt))
 ;
 (* Rule 19, file Parser.grm, line 102 *)
 val _ = update_ yyact 19
 (fn () => repr(let
 val d__1__ = peekVal 0 : string*AbSyn.Pos
 in
-( AbSyn.Var (#1 (d__1__)) ) end : AbSyn.LVAL))
+( (AbSyn.Var (#1 (d__1__)), #2 (d__1__)) ) end : AbSyn.LVAL*AbSyn.Pos))
 ;
 (* Rule 20, file Parser.grm, line 103 *)
 val _ = update_ yyact 20
@@ -463,7 +463,7 @@ val d__2__ = peekVal 2 : AbSyn.Pos
 val d__3__ = peekVal 1 : AbSyn.Exp list
 val d__4__ = peekVal 0 : AbSyn.Pos
 in
-( AbSyn.Index (#1 (d__1__), (d__3__)) ) end : AbSyn.LVAL))
+( (AbSyn.Index (#1 (d__1__), (d__3__)), #2 (d__1__)) ) end : AbSyn.LVAL*AbSyn.Pos))
 ;
 (* Rule 21, file Parser.grm, line 107 *)
 val _ = update_ yyact 21
@@ -518,9 +518,9 @@ in
 (* Rule 28, file Parser.grm, line 117 *)
 val _ = update_ yyact 28
 (fn () => repr(let
-val d__1__ = peekVal 0 : AbSyn.LVAL
+val d__1__ = peekVal 0 : AbSyn.LVAL*AbSyn.Pos
 in
-( AbSyn.LValue ((d__1__), (0,0)) ) end : AbSyn.Exp))
+( AbSyn.LValue (#1 (d__1__), #2 (d__1__)) ) end : AbSyn.Exp))
 ;
 (* Rule 29, file Parser.grm, line 118 *)
 val _ = update_ yyact 29
