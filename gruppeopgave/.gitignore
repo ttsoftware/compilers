@@ -1,3 +1,4 @@
 SRC/*.ui
 SRC/*.uo
 BIN/*
+DATA/*.asm
