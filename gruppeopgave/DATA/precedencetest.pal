@@ -1,0 +1,30 @@
+program precedence;
+
+procedure main()
+var 
+    a : int;
+    b : int;
+    c : int;
+    d : int;
+    x : bool;
+    y : bool;
+    z : bool;
+    q : bool;
+begin
+    a := 10;
+    b := 5;
+    c := 2;
+    x := true;
+    y := false;
+    z := false;
+    
+    q := y = z or not x = y and x = z;
+    write(q = true);
+    
+    q := x = z or not x = y and x = z;
+    write(q = false);
+    
+    d := a + b * b - a / c;
+    write(d); 
+    
+end;

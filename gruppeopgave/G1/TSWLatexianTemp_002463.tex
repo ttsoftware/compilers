@@ -133,8 +133,7 @@ In order to implement the functions for our compiler aswell we had to include th
 The last step for the full implementation of multiplication, division, or and not were to implement them in \textit{compiler.sml}. The functionality of the four operations were straight forward and inspired by the ones already implemented. For the functionality of not in Mips code we used the mips instruction $XORI$. This is due to the fact that there doesn't exist a $NOT$ instruction in Mips. $XOR$ returns $1$ (true) if one of the arguments is different from $1$. In order to use this in the not scenario we pass the value to be negated, together with $1$ as the second argument.$XORI$ then returns true if the input argument is $0$ and false if the argument is $1$, as we would expect of not. 
 
 \section{Task 3}
-In this task we were to implement typechecking for Paladims library functions read() and new()
-
+In this task we were to implement typechecking for Paladims library functions Read() and New()
 \subsection{Type.sml}
 The major change in the task, was changing the typeCheckExp function, to correctly typecheck the functions $read$ and $new$. In order to accomplish this, the typechecker needs to determine the expected type of the argument calling context. In the majority of the cases we changed from UnknownType to KnownType (<expected type>). \\
 
@@ -143,24 +142,6 @@ The actual changes can be found in Listing 9, 10 and 11 in appendix E. Two opera
 The major reason we do not inherit the expected type, is due to the fact that not all of our operators are polymorphic.\footnote{Appendix E. Type.sml Listing 10, 11 and 12.}
 
 \section{Task 4}
-In this task we were to implement type checking and code generation for array indexing. 
-
-\subsection{Type.sml}
-We added type checking by modifying typeCheckExp for the AbSyn.LValue(AbSyn.Index) case. The function raises an error if the array name doesn't exist in the symbol table, if the number of indices is not equal to the number of ranks in the array (which is nonzero since the array is in the symbol table and therefore have been type checked already), or if not all indices are of type Int. \\
-It then creates new typed versions of all the indices and constructs a typed array index which it returns. \\
-Bounds checking is not possible at this point since it would require a recursive evaluation function for all expressions. This is instead done runtime.
-\footnote{Appendix E. Type.sml listing 12.}
-
-\subsection{Compiler.sml}
-We added machine code generation by modifying compileLVal for the Index case. The generated MIPS code supports the following functionality: \\
-Each index is added to the stack so they can be accessed in a loop afterwards (we could also have put them in new registers and let the register allocator do the work, but this way, we know exactly where our indices are.). \\ 
-The MIPS code then enters a loop that runs for each index. It gets the next dimension and index, simultaneously checking for bounds and calculating the flat index. This is done without using the store strides since
-\[i_{flat} = i_n + d_n(i_{n-1} + d_{n-1}(... i_2 + d_2i_1))\]
-for an array with $n$ dimensions. \\
-After the flat index is calculated, the strides are skipped and the flat index is added to the array (dereferencing the array data pointer). \\\\
-A disadvantage to this approach is that the code is generated anew each time an array is indexed even though the procedure is exactly the same. This could be fixed by placing the code once in the assembly file and the jumping to it every time an array index needs to be calculated. \\
-This would require something similar to a MIPS function call, because you would have to pass parameters to it via the stack and handle local variables etc. 
-\footnote{Appendix F. Compiler.sml listing 14,15,16}
 
 \section{Task 5}
 In this task we were to change the way Paladims procedures passes their arguments from call-by-value to call-by-value-result.
@@ -617,6 +598,7 @@ and updateOuterVtable vtabOuter vtabInner (TpAbSyn.LValue (lval1, pos1),
 
 | typeCheckExp( vtab, AbSyn.LValue( AbSyn.Index(id, inds), pos ), _ ) =
     let
+       val indices = length inds
        val newinds = map (fn n=>
 			typeCheckExp(vtab,n,KnownType (BType Int))) inds
        val correctinds = List.all (fn n => 
@@ -624,7 +606,7 @@ and updateOuterVtable vtabOuter vtabInner (TpAbSyn.LValue (lval1, pos1),
     in
        case SymTab.lookup id vtab of
           SOME (Array(r,t)) => 
-             if r = length inds andalso correctinds 
+             if indices > 0 andalso r = length inds andalso correctinds 
              then
                LValue(Index((id,Array(r,t)),newinds),pos)
              else
