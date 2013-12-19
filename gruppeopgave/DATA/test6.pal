@@ -1,26 +1,34 @@
-program test5;
+program task3readtest;
 
 procedure main()
 var 
     x : int;
     y : bool;
 begin
-
+    // The first input should be an integer, hence chr() 
+    // and the second input a char.
+    // for example 1. input: 100, 2. input: d, output = 1 (true)
     y := chr(read()) = read();
     write(y);
-
+    // the input for read should be of type integer
     x := 3 + read();
     write(x);
+    // the input for read should be of type integer
     y := 3 = read();
     write(y);
+    // the input for read should be a char
     y := 'a' = read();
     write(y);
+    // the input for read should be an integer
     y := 3 < read();
     write(y);
+    // the input for read should be of type bool
     y := false or read();
     write(y);
+    // the input for read should be of type bool
     y := true and read();
     write(y);
+    // the input for read should be of type bool
     y := not read();
     write(y);
 end;
