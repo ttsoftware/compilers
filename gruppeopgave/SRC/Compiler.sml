@@ -450,7 +450,7 @@ struct
         in  
             code @ [Mips.MOVE (rs, makeConst reg)]
         end
-    | popArgs (e::es) vtable reg (t::ts) = popArgs es vtable reg ts
+    | popArgs (e::es) vtable reg (t::ts) = popArgs (e::es) vtable reg ts
     | popArgs _ vtable reg [] = []
     | popArgs [] vtable reg _ = []
 
