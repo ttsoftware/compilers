@@ -249,8 +249,8 @@ struct
 
       (* Must be modified to complete task 3 *)
     | typeCheckExp ( vtab, AbSyn.Less (e1, e2, pos), _ ) =
-        let val e1_new = typeCheckExp(vtab, e1, KnownType (BType Int) )
-            val e2_new = typeCheckExp(vtab, e2, KnownType (BType Int) )
+        let val e1_new = typeCheckExp(vtab, e1, UnknownType )
+            val e2_new = typeCheckExp(vtab, e2, KnownType (typeOfExp e1_new) )
             val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
             (* check that tp1 is not an array type *)
             val () = case tp1 of
