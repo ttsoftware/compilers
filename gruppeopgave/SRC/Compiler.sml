@@ -430,8 +430,7 @@ struct
 
 
   (* move args to callee registers *)
-  and putArgs [] vtable reg =
-        ([], reg)
+  and putArgs [] vtable reg = ([], reg)
     | putArgs (e::es) vtable reg =
       let
           val t1 = "_funarg_" ^ newName()
@@ -445,14 +444,14 @@ struct
       end
 
   (* Swap temporary registers with caller registers, after the procedure has finished *)
-  and popArgs (e::es) vtable reg ((Mips.ORI(rd, rs, v))::ts) =
+  and popArgs vtable reg ((Mips.ORI(rd, rs, v))::ts) =
         let 
-            val code = compileExp(vtable, e, rs) @ popArgs es vtable (reg+1) ts
+            val code = popArgs vtable (reg+1) ts
         in  
             code @ [Mips.MOVE (rs, makeConst reg)]
         end
-    | popArgs es vtable reg (t::ts) = popArgs es vtable reg ts
-    | popArgs _ vtable reg _ = []
+    | popArgs vtable reg (t::ts) = popArgs vtable reg ts
+    | popArgs vtable reg _ = []
 
   and compileLVal( vtab : VTab, Var (n,_) : LVAL, pos : Pos ) : Mips.mips list * Location =
         ( case SymTab.lookup n vtab of
@@ -632,7 +631,7 @@ struct
         | ProcCall ((n,_), es, p) => 
           let
               val (mvcode, maxreg) = putArgs es vtable minReg              
-              val prod_codes = popArgs es vtable minReg mvcode
+              val prod_codes = popArgs vtable minReg mvcode
               val new_mvcode = mvcode
                   @ [Mips.JAL (n, List.tabulate (maxreg, fn reg => makeConst reg))]
                   @ prod_codes
