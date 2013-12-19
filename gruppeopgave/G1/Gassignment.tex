@@ -30,9 +30,9 @@
 \lstset{moredelim=[s][\color{gray}]{/*}{*/}}
 \lstset{emph={char,int,bool,string,array,Bool,Int,Char,Array,String},emphstyle=\color{yellow!50!brown},
 	  emph={[2]NONE,SOME},emphstyle={[2]\color{orange}},
-	  emph={[3]let,fun,map,val,in,case,of,end,and,token,type,nonassoc,right,left,start,handle,if,then,else,andalso,orelse},emphstyle={[3]\color{brown}},
+	  emph={[3]let,fun,map,return,val,in,case,of,end,and,token,type,nonassoc,right,left,start,handle,if,then,else,andalso,orelse},emphstyle={[3]\color{brown}},
 	  emph={[4]call_args,hitler,updateOuterVtable,lenin,evalExp,
-	  evalOr,evalBinop,evalNot,print, compileExp, pp_exp, typeOfExp, posOfExp, Times, Div, Or, Not,pp_type,typeCheckExp,Mips},emphstyle={[4]\color{blue}},
+	  evalOr,evalBinop,evalNot,print, compileExp, pp_exp, typeOfExp, posOfExp,newName, Times, Div, Or, Not,pp_type,typeCheckExp,Mips},emphstyle={[4]\color{blue}},
 	  emph={[5]},emphstyle={[5]\color{orange!50!red}}}
 
 
@@ -56,83 +56,107 @@
 \tableofcontents
 \newpage
 \section{Introduction}
+The goal of the group assignment is to implement a compiler for the Paladim language using a bottom-up grammar. The langauge we use for this implementation is Stanard ML.
+The majority of the compiler has already been implemented, and the changes we made are described in the individual tasks below. 
+The first two tasks of the assigment was completed as a milestone assignment. We have made slight changes since the milestone, which improves the work done in these two tasks. A full description of these tasks and all the changes we made, are also included here.
 
-\begin{lstlisting}
-in  ( case (rtp, res) of
-      (NONE , _) =>
-           let 
-             fun call_args [] [] = NONE
-               | call_args (x::xs) (y::ys) =
-                 let 
-                   val hitler = updateOuterVtable vtab new_vtab (x, y)
-                 in
-                   call_args xs ys
-                 end
-               | call_args _ _ = raise Error
-				       ("Number of functions " ^ 
-			                "args does not match " ^ 
-				        "declaration, at ", pdcl)
-                 in 
-                   call_args aexps fargs  
-                 end
-\end{lstlisting}
+\section{Task 1}
+We were asked to implement the grammar production rules for the paladim language, which is described in the group project description document.
 
+In order to implement the grammar, we have edited the empty file \textit{Parser.grm}, which was already included in the source code handout. We also edited the \textit{Driver.sml} and the \textit{Lexer.lex} source code file, to use our new parser structure instead of the LL1Parser which was included in the handout. \\
+
+For inspirational purposes we used the file \textit{example.pdf} which we found on absalon, and the groupproject description document. In these documents we found examples for creating type precedence, how to construct terminals and non-terminals, and how to use them correctly in the grammar.  \\
+
+The following sections describe the changes made to each file respectively.
+\subsection{Parser.grm}
+\subsubsection{Terminals}
+The first definition in the parser, is the definition of terminals, which in mosmlyac is called tokens.
+Here we use the abstract syntax type definitions to define the types of our tokens. The tokens themselves are defined in the \textit{Lexer.lex} file. We simply found all tokens in the lexer, and defined tokens for them.\footnote{See Appendix A. Parser.grm figure 1.}
+
+\subsubsection{Precedence Rules}
+
+Next we define our precedence rules, to prevent shift / reduce conflicts. The rules at the bottom take the highest precedence.
+We use left associative precedence for arithmetic operations, ranking \textit{TTimes} and \textit{TSlash} higher than \textit{TPlus} and \textit{TMinus}. \\
+
+We define comparison operations \textit{TLess} and \textit{TEq} as non-associative, since it is not specified whether comparison is associative in Paladim in the project description. \\
+
+The logical operation \textit{TNot} is defined as non-associative because it is unary. We define the other logical operations \textit{TAnd} and \textit{TOr} as left-associative (they can be either left- or right-associative, but should not be non-associative). Here \textit{TNot} takes precedence over \textit{TAnd} which takes precedence over \textit{TOr}. \\
+
+The last two precedence rules are defined to resolve the shift / reduce conflict, which occurs when trying to write productions for If-Then-Else and If-Then. This conflict occurs in the following scenario. 
 \begin{lstlisting}
-and updateOuterVtable vtabOuter vtabInner 
-                     (TpAbSyn.LValue (lval1, pos1), 
-	              TpAbSyn.Dec ((id2,tp), pos2)) = 
-    let 
-      val lenin = ( case lval1 of 
-                    Var(id,tp) => id
-                  | Index((id,tp),e) => id)
-    in
-      case (SymTab.lookup lenin vtabOuter, 
-            SymTab.lookup id2 vtabInner) of
-      (SOME x, SOME y) => x := !y
-      | _              => raise Error("Procedure argument " ^ 
-				      "not in caller", pos1)
-    end
-|   updateOuterVtable _ _ _ = raise Fail("Internal type error, " ^ 
-                                         "see updateOuterVtable. \n")
+if a > b then
+    if c = d then
+        return a
+    else
+        return b
 \end{lstlisting}
+In this scenario the parser does not know whether to match the production for If-Then-Else, or the production for If-Then. If it shifts, the else belongs to the inner if-statement, but if it reduces, the else belongs to the outer if-statement. In this scenario, we actually always wants to shift, because the else should belong to the closest previous if-then-statement. In order to accomplish this, we define TElse to take precedence over "LowPrec". We later assign "LowPrec" to the If-Then production grammar, and thus resolve the shift / reduce conflict.\footnote{See Appendix A. Parser.grm figure 1.}
+
+\subsubsection{Non-Terminals}
+
+In this section we define our start symbol, and the non-terminals for our productions. \\
+The types used for the non-terminals are defined in \textit{AbSyn.sml}. The actual non-terminals are defined in figure 3 in the group project definition document. The start symbol "Program" was defined by us, in order to handle end of file.\footnote{See Appendix A. Parser.grm, figure 2}
+
+\subsubsection{Grammar}
+
+In this section we define the grammar\footnote{See Appendix A. Parser.grm figure 2-5} used by the parser. For easier analysis we have divided the grammar into sections.
+In general we built the grammar by looking at the production definitions in figure 3 in the group project definition. The type we return in the productions, are defined in the \textit{AbSyn.sml}. 
+
+\subsubsection{Program structure}
+
+The most important change in this section, is the Block production. To begin with we had a DBlock production, as described in figure 3 in the group project definition. This caused a shift / reduce conflict, which we resolved by combining the DBlock with the Block production.\footnote{See Appendix A. Parser.grm figure 3.}
+
+\subsubsection{Statements, Values and Expressions}
+The most important change in this section, is the \textit{TIf Exp TThen Block \%prec LowPrec} production. As described in the non-terminal definitions, we need to assign lower precedence to the If-Then production. This is done by adding \%prec LowPrec at the end of the production.\footnote{See Appendix A. Parser.grm figure 3.}
+
+\textbf{The Exp LVal production} in this section might be problematic. This production needs to return an AbSyn.LValue(LVal, Pos). However this is not possible, because we call another production which only returns an LVal without a position. To solve this issue, we changed the non-terminal definition from <AbSyn.LVAL> to <AbSyn.LVAL*AbSyn.Pos>\footnote{See Appendix A.  Parser.grm figure 2.}. This allows us to give our LValue the correct position, without modifying the syntax definition in AbSyn.sml.
+
+\subsubsection{Parameters and Procedures}
+At the end we have our simple definitions for parameters and declarations.\footnote{See Appendix A. Parser.grm figure 5.}
+
+\subsection{Driver.sml}
+In the driver file we have uncommented the two lines which was meant for the LL1 parser and instead inserted the appropriate ones for our parser (line 57 and 69). Furthermore we have uncommented the Parser.ParseError, because this error message will be caught by the Parsing.ParseError, and instead only created compile errors.\footnote{See appendix B. Driver.sml figure 6.}
 \newpage
-\begin{lstlisting}
-  | evalExp ( Div(e1, e2, pos), vtab, ftab ) =
-        let val res1   = evalExp(e1, vtab, ftab)
-            val res2   = evalExp(e2, vtab, ftab)
-        in  evalBinop(op div, res1, res2, pos)
-        end
+\subsection{Lexer.lex}
+In the \textit{Lexer.lex} we have changed all instances of LL1parser to Parser, thereby including our newly created Parser.grm instead of the handout. Please note that this code is left out.
 
-  | evalExp ( Times(e1, e2, pos), vtab, ftab ) =
-        let val res1   = evalExp(e1, vtab, ftab)
-            val res2   = evalExp(e2, vtab, ftab)
-        in  evalBinop(op *, res1, res2, pos)
-        end
+\section{Task 2}
+In this task we were to implement the functionality of multiplication, division, or and not in Paladim. To do this we had to go through several source code files and implement the functionality of each of them. The files we've changed include; \textit{Compiler.sml},\textit{TpInterpret.sml},\textit{Type.sml} and \textit{TpAbSyn.sml}. Furthermore we were to make sure our precedence for boolean operators and arithmetic operations were correct, please note that this was done already in task 1\footnote{See Appendix A. Parser.grm figure 1.}
+\subsection{TpAbSyn.sml}
+In order to implement the functionality of the four operations we started in \textit{TpAbSyn.sml}, where we first uncommented the four of them in the datatype for \textit{exp}, afterwards we made pretty printing for the four of the functions with inspiration from the ones already implemented, then a function that was able to find the position of each of the operations and at last we implemented the functionality to find the type of the operations.\footnote{See Appendix C. TpAbSyn.sml figure 7.}
+\subsection{TpInterpret.sml}
+In this file we implemented the functionality of the four functions for the Interpreter, this was done with inspiration from the ones already implemented, this was done in \textit{evalExp}. In order to implement the to logical operations we had needed the a helper function for each of them. These changes made the functionality of our four functions work in the interpreter.\footnote{See Appendix D. TpInterpret.sml figure 8.}
+\subsection{Type.sml}
+In order to implement the functions for our compiler aswell we had to include them in the \textit{type.sml}. These were aswell inspired by the ones already there. Please note that the types stated weren't added until task 3, and that the one for multiplication is left out because it's very similar to the one for division.\footnote{See Appendix E. Type.sml figure 9}
+\subsection{Compiler.sml}
+The last step for the full implementation of multiplication, division, or and not were to implement them in \textit{compiler.sml}. The functionality of the four operations were straight forward and inspired by the ones already implemented. For the functionality of not in mips code we used the mips instruction $XORI$. This is due to the fact that there doesn't exist a $NOT$ instruction in mips. $XOR$ returns $1$ (true) if one of the arguments is different from $1$. In order to use this in the not scenario we pass the value to be negated, together with $1$ as the second argument.$XORI$ then returns true if the input argument is $0$ and false if the argument is $1$, as we would expect of not. 
 
-  | evalExp ( Or(e1, e2, pos), vtab, ftab ) =
-        let val r1 = evalExp(e1, vtab, ftab)
-            val r2 = evalExp(e2, vtab, ftab)
-  	in  evalOr(r1, r2, pos)
-  	end
-    
-  | evalExp ( Not(e1, pos), vtab, ftab ) =
-        let val r1 = evalExp(e1, vtab, ftab)
-        in  evalNot(r1, pos)
-        end
+\section{Task 3}
+In this task we were to implement typechecking for Paladims library functions Read() and New()
+\subsection{Type.sml}
+The major change in the task, was changing the typeCheckExp function, to correctly typecheck the functions $read$ and $new$. In order to accomplish this, the typechecker needs to determine the expected type of the argument calling context. In the majority of the cases we changed from UnknownType to KnownType (<expected type>). \\
 
-fun evalOr  (BVal (Log b1), BVal (Log b2), pos) = 
-	     BVal (Log (b1 orelse b2))
-  | evalOr  (v1, v2, pos) =
-        raise Error( "Or: argument types do not match. Arg1: " ^
-                      pp_val v1 ^ ", arg2: " ^ pp_val v2, pos )
-                      
-fun evalNot  (BVal (Log b1), pos) = BVal (Log (not b1))
-  | evalNot  (v1, pos) =
-        raise Error( "Not: argument types do not match. Arg1: " ^
-                      pp_val v1, pos )
-\end{lstlisting}
+The actual changes can be found in figure 9, 10 and 11 in appendix E. Two operations differ from this; Less and Equal, these two still holds UnkownType for argument1 but here the second argument is the same as what the 1. argument turns out to be. This is due to the fact that they are polymorphic. Even tho they are polymorphic, the types of both arguments needs to be equal. We cannot infer exactly what types, but only that they must be equal.
+
+The major reason we do not inherit the expected type, is due to the fact that not all of our operators are polymorphic.\footnote{Appendix E. Type.sml figure 10, 11 and 12.}
+
+\section{Task 4}
+
+\section{Task 5}
+In this task we were to change the way Paladims procedures passes their arguments from call-by-value to call-by-value-result.
+\subsection{TpInterpreter.sml}
+In order to make Paladim procedures use call-by-value-result we change the \textit{TpInterpreter.sml}. We use the references from our innerVtable and swap them with the references for the according arguments in the outerVtable.\footnote{See appendix D. TpInterpreter.sml figure 9} To do this we used the already implemented arguments \textit{fargs} and \textit{aexps}.
+
+\subsection{Compiler.sml}
+
 
 \newpage
+\section{Testing}
+We have made two test examples; one that covers the problem with nested \textit{if then else} and another one that tests precedence with multiplication and addition. We ran the compiled programs in Mars and they returned the expected results ("If-then-else virker!!!" and "det virker jo").
+\newpage
+
+\section{Appendix A. Parser.grm}
+\begin{figure}[h]
 \begin{lstlisting}
 %{ 
    
@@ -169,7 +193,11 @@ fun evalNot  (BVal (Log b1), pos) = BVal (Log (not b1))
 
 /* start symbol */
 %start Program
+\end{lstlisting}
+\caption{The tokens and precedence rules for our grammar in Parser.grm.}\end{figure}
 
+\begin{figure}[h]
+\begin{lstlisting}
 /* types returned by rules below */
 %type <AbSyn.Prog> Program
 %type <AbSyn.Prog> Prog
@@ -204,7 +232,11 @@ FunDecs :
     FunDecs FunDec                 { $1 @ [$2] }
   | FunDec                         { [$1] }
 ;
+\end{lstlisting}
+\caption{The types and some of the grammar for the Parser.grm.}\end{figure}
 
+\begin{figure}[h]
+\begin{lstlisting}
 FunDec :
     TFunction TId TLParen PDecl TRParen TColon Type Block TSemi
                                    { AbSyn.Func($7, #1 $2, $4, $8, $1) }
@@ -240,7 +272,11 @@ Stmt :
   | TReturn Ret                    { AbSyn.Return ($2, $1) }
   | LVal TAssign Exp               { AbSyn.Assign ($1, $3, $2) }
 ;
+\end{lstlisting}
+\caption{More of the grammar for our Parser.grm.}\end{figure}
 
+\begin{figure}
+\begin{lstlisting}
 /* L-VALUES AND EXPRESSIONS */
 LVal :
     TId                            { AbSyn.Var (#1 $1) }
@@ -251,9 +287,7 @@ Ret :
     Exp                            { SOME $1 }
   |                                { NONE }
 ;
-\end{lstlisting}
-\newpage
-\begin{lstlisting}
+
 Exp :
     TNLit                          { AbSyn.Literal (AbSyn.BVal(
 				     AbSyn.Num(#1 $1)), #2 $1) }
@@ -282,7 +316,11 @@ PDecl :
     Params                         { $1 }
   |                                { [] }
 ;
+\end{lstlisting}
+\caption{More of the grammar for our Parser.grm.}\end{figure}
 
+\begin{figure}[h]
+\begin{lstlisting}
 Params :
     Params TSemi Dec               { $1 @ [$3] }
   | Dec                            { [$1] }
@@ -291,9 +329,7 @@ Params :
 Dec :
     TId TColon Type                { AbSyn.Dec (#1 $1, $3, #2 $1) }
 ;
-\end{lstlisting}
-\newpage
-\begin{lstlisting}
+
 Decs :
     Decs Dec TSemi                 { $1 @ [$2] }
   | Dec TSemi                      { [$1] }
@@ -320,7 +356,11 @@ Exps :
 
 (* SML trailer *)
 \end{lstlisting}
+\caption{The last of the grammar for our Parser.grm.}\end{figure}
+
 \newpage
+\section{Appendix B. Driver.sml}
+\begin{figure}[h]
 \begin{lstlisting}
 fun compile arg path =
   let
@@ -349,55 +389,24 @@ fun compile arg path =
    (* | Parser.ParseError s =>
          errorMsgAt ("Parse error: " ^ s) (Lexer.getPos lexbuf) *)
 \end{lstlisting}
+\caption{The Driver.sml changes for our parser.grm.}\end{figure}
 
-\begin{lstlisting}
-| compileExp( vtable, Times (e1, e2, _), place ) =
-    let val t1 = "times1_" ^ newName()
-        val c1 = compileExp(vtable, e1, t1)
-        val t2 = "times2_" ^ newName()
-        val c2 = compileExp(vtable, e2, t2)
-    in c1 @ c2 @ [Mips.MUL (place,t1,t2)]
-    end
-
-| compileExp( vtable, Div (e1, e2, _), place ) =
-    let val t1 = "div1_" ^ newName()
-        val c1 = compileExp(vtable, e1, t1)
-        val t2 = "div2_" ^ newName()
-        val c2 = compileExp(vtable, e2, t2)
-    in c1 @ c2 @ [Mips.DIV (place,t1,t2)]
-    end
-\end{lstlisting}
-
-\begin{lstlisting}
-| compileExp( vtable, Or(e1, e2, _), place ) =
-    let val t1 = "or1_" ^ newName()
-        val c1 = compileExp(vtable, e1, t1)
-        val t2 = "or2_" ^ newName()
-        val c2 = compileExp(vtable, e2, t2)
-        val lA = "_or_" ^ newName()
-    in 
-        c1 @ c2 @ [Mips.OR (place,t1,t2)]
-    end
-        
-| compileExp( vtable, Not(e1, _), place ) =
-    let val t1 = "not1_" ^ newName()
-        val c1 = compileExp(vtable, e1, t1)
-        val lA = "_not_" ^ newName()
-    in 
-        c1 @ [Mips.XORI (place,t1,"1")]
-    end
-\end{lstlisting}
-
+\newpage
+\section{Appendix C. TpAbSyn.sml}
+\begin{figure}[h]
 \begin{lstlisting}
 | Times   of Exp * Exp         * Pos      (* e.g., x * 3 *)
 | Div     of Exp * Exp         * Pos      (* e.g., x / 3 *) 
-| Or      of Exp * Exp         * Pos      (* e.g., (x=5) or y *)
-| Not     of Exp               * Pos      (* e.g., not (x>3) *)
+| Or      of Exp * Exp         * Pos (* e.g., (x=5) or y *)
+| Not     of Exp               * Pos (* e.g., not (x>3)  *)
 
-| pp_exp (Or    (e1, e2, _))    = "( " ^ pp_exp e1 ^ " | " ^ pp_exp e2 ^ " )"
+| pp_exp (Or    (e1, e2, _))    = "( " ^ pp_exp e1 ^ " | " ^ 
+				  pp_exp e2 ^ " )"
 | pp_exp (Not   (e1,     _))    = "( not " ^ pp_exp e1 ^ " )"
-| pp_exp (Times (e1, e2, _))    = "( " ^ pp_exp e1 ^ " * " ^ pp_exp e2 ^ " )"
-| pp_exp (Div   (e1, e2, _))    = "( " ^ pp_exp e1 ^ " / " ^ pp_exp e2 ^ " )"
+| pp_exp (Times (e1, e2, _))    = "( " ^ pp_exp e1 ^ " * " ^ 
+				  pp_exp e2 ^ " )"
+| pp_exp (Div   (e1, e2, _))    = "( " ^ pp_exp e1 ^ " / " ^
+				  pp_exp e2 ^ " )"
 
 | typeOfExp ( Or     (_,_,_) ) = BType Bool
 | typeOfExp ( Not    (_,  _) ) = BType Bool
@@ -408,9 +417,91 @@ fun compile arg path =
 | posOfExp  ( Not    (_,  p) ) = p
 | posOfExp  ( Times  (_,_,p) ) = p
 | posOfExp  ( Div    (_,_,p) ) = p
+\end{lstlisting}
+\caption{TpAbSyn.sml with the functionality of the four operations implemented for task 2.}\end{figure}
+
+\newpage
+\section{Appendix D. TpInterpret.sml}
+\begin{figure}[h]
+\begin{lstlisting}
+fun evalOr  (BVal (Log b1), BVal (Log b2), pos) = 
+	     BVal (Log (b1 orelse b2))
+  | evalOr  (v1, v2, pos) =
+        raise Error( "Or: argument types do not match. Arg1: " ^
+                      pp_val v1 ^ ", arg2: " ^ pp_val v2, pos )
+                      
+fun evalNot  (BVal (Log b1), pos) = BVal (Log (not b1))
+  | evalNot  (v1, pos) =
+        raise Error( "Not: argument types do not match. Arg1: " ^
+                      pp_val v1, pos )
+
+  | evalExp ( Div(e1, e2, pos), vtab, ftab ) =
+        let val res1   = evalExp(e1, vtab, ftab)
+            val res2   = evalExp(e2, vtab, ftab)
+        in  evalBinop(op div, res1, res2, pos)
+        end
+
+  | evalExp ( Times(e1, e2, pos), vtab, ftab ) =
+        let val res1   = evalExp(e1, vtab, ftab)
+            val res2   = evalExp(e2, vtab, ftab)
+        in  evalBinop(op *, res1, res2, pos)
+        end
+
+  | evalExp ( Or(e1, e2, pos), vtab, ftab ) =
+        let val r1 = evalExp(e1, vtab, ftab)
+            val r2 = evalExp(e2, vtab, ftab)
+  	in  evalOr(r1, r2, pos)
+  	end
+    
+  | evalExp ( Not(e1, pos), vtab, ftab ) =
+        let val r1 = evalExp(e1, vtab, ftab)
+        in  evalNot(r1, pos)
+        end
+\end{lstlisting}
+\caption{TpInterpret.sml changes for task 2}\end{figure}
+
+\begin{figure}[h]
+\begin{lstlisting}
+let val new_vtab = bindTypeIds(fargs, aargs, fid, pdcl, pcall)
+    val res  = execBlock( body, new_vtab, ftab )
+in  ( case (rtp, res) of
+        (NONE , _) =>
+        let 
+            fun call_args [] [] = NONE
+              | call_args (x::xs) (y::ys) =
+                  let 
+                    val hitler = updateOuterVtable vtab new_vtab (x, y)
+                  in
+                    call_args xs ys
+                  end
+              | call_args _ _ = raise Error("Number of functions args" ^
+					    " does not match " ^ 
+					    "declaration, at ", pdcl)
+        in 
+            call_args aexps fargs  
+        end
+
+and updateOuterVtable vtabOuter vtabInner (TpAbSyn.LValue (lval1, pos1), 
+					   TpAbSyn.Dec ((id2,tp), pos2)) 
+								      = 
+     let val lenin = (case lval1 of 
+                Var(id,tp) => id
+              | Index((id,tp),e) => id)
+     in
+         case (SymTab.lookup lenin vtabOuter, 
+	       SymTab.lookup id2 vtabInner) of
+              (SOME x, SOME y) => x := !y
+             | _               => raise Error("Procedure argument " ^
+					      "not in caller", pos1)
+     end
+ | updateOuterVtable _ _ _ = ()
 
 \end{lstlisting}
+\caption{TpInterpreter task 5}\end{figure}
 
+\newpage
+\section{Appendix E. Type.sml}
+\begin{figure}[h]
 \begin{lstlisting}
 (* Must be modified to complete task 3 *)
 | typeCheckExp( vtab, AbSyn.Div (e1, e2, pos), _ ) =
@@ -424,53 +515,7 @@ fun compile arg path =
 			 "is not of int type "^ pp_type tp1^
 			 " and "^pp_type tp2^" at ", pos)
    end
-          
-(* Must be modified to complete task 3 *)
-| typeCheckExp ( vtab, AbSyn.Equal(e1, e2, pos), _ ) =
-  let val e1_new = typeCheckExp(vtab, e1, UnknownType)
-      val e2_new = typeCheckExp(vtab, e2, 
-		   		KnownType (typeOfExp e1_new) )
-      val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
-      (* check that tp1 is not an array type *)
-      val () = case tp1 of
-               Array _ => raise Error("in type check equal, " ^
-				      "first expression " ^
-				      pp_exp e1_new ^
-                                      "is an array (of type) " ^
-				      pp_type tp1 ^ " at ", pos)
-                   | _ => ()
-  in  if  typesEqual(tp1, tp2)
-      then Equal(e1_new, e2_new, pos)
-      else raise Error("in type check equal exp, " ^
-		       " argument types do not match " ^
-                       pp_type tp1^" <> "^pp_type tp2^" at ", pos)
-  end
-\end{lstlisting}
-\newpage
-\begin{lstlisting}
-(* Must be modified to complete task 3 *)
-| typeCheckExp ( vtab, AbSyn.Less (e1, e2, pos), _ ) =
-    let val e1_new = typeCheckExp(vtab, e1, KnownType (BType Int) )
-        val e2_new = typeCheckExp(vtab, e2, KnownType (BType Int) )
-        val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
-        (* check that tp1 is not an array type *)
-        val () = case tp1 of
-                   Array _ => raise Error("in type check less, " ^
-					  "first expression "^ 
-					  pp_exp e1_new ^
-                                          "is an array (of type) " ^
-					  pp_type tp1^" at ", pos)
-                       | _ => ()
-    in  if  typesEqual(tp1, tp2)
-        then Less(e1_new, e2_new, pos)
-        else raise Error("in type check less exp, argument types " ^
-			 " do not match "^
-                         pp_type tp1^" <> "^pp_type tp2^" at ", pos)
-    end
 
-\end{lstlisting}
-\newpage
-\begin{lstlisting}
 (* Must be modified to complete task 3 *)
 | typeCheckExp ( vtab, AbSyn.Or (e1, e2, pos), _ ) =
     let val e1_new = typeCheckExp(vtab, e1, KnownType (BType Bool) )
@@ -495,7 +540,56 @@ fun compile arg path =
                             pp_type tp1^" at ", pos)
     end   
 \end{lstlisting}
-\newpage
+\caption{Changes made in type.sml for task 2 and task 3}\end{figure}
+
+
+\begin{figure}[h]
+\begin{lstlisting}
+(* Must be modified to complete task 3 *)
+| typeCheckExp ( vtab, AbSyn.Less (e1, e2, pos), _ ) =
+    let val e1_new = typeCheckExp(vtab, e1, UnknownType )
+        val e2_new = typeCheckExp(vtab, e2, KnownType (typeOfExp e1_new) )
+        val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
+        (* check that tp1 is not an array type *)
+        val () = case tp1 of
+                   Array _ => raise Error("in type check less, " ^
+					  "first expression "^ 
+					  pp_exp e1_new ^
+                                          "is an array (of type) " ^
+					  pp_type tp1^" at ", pos)
+                       | _ => ()
+    in  if  typesEqual(tp1, tp2)
+        then Less(e1_new, e2_new, pos)
+        else raise Error("in type check less exp, argument types " ^
+			 " do not match "^
+                         pp_type tp1^" <> "^pp_type tp2^" at ", pos)
+    end
+
+(* Must be modified to complete task 3 *)
+| typeCheckExp ( vtab, AbSyn.Equal(e1, e2, pos), _ ) =
+  let val e1_new = typeCheckExp(vtab, e1, UnknownType)
+      val e2_new = typeCheckExp(vtab, e2, 
+		   		KnownType (typeOfExp e1_new) )
+      val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
+      (* check that tp1 is not an array type *)
+      val () = case tp1 of
+               Array _ => raise Error("in type check equal, " ^
+				      "first expression " ^
+				      pp_exp e1_new ^
+                                      "is an array (of type) " ^
+				      pp_type tp1 ^ " at ", pos)
+                   | _ => ()
+  in  if  typesEqual(tp1, tp2)
+      then Equal(e1_new, e2_new, pos)
+      else raise Error("in type check equal exp, " ^
+		       " argument types do not match " ^
+                       pp_type tp1^" <> "^pp_type tp2^" at ", pos)
+  end
+
+\end{lstlisting}
+\caption{Changes in type.sml for task 3}\end{figure}
+
+\begin{figure}[h]
 \begin{lstlisting}
 (* function call to `new' uses expected type to infer
    the to-be-read result *)
@@ -515,9 +609,7 @@ fun compile arg path =
               raise Error("declared array dimensions are not " ^
 			  "integers, at ", pos)
           end
-\end{lstlisting}
 
-\begin{lstlisting}
 | typeCheckExp( vtab, AbSyn.LValue( AbSyn.Index(id, inds), pos ), _ ) =
     let
        val indices = length inds
@@ -537,7 +629,50 @@ fun compile arg path =
 			   ^id^"not in VTab, at",pos)
     end
 \end{lstlisting}
+\caption{changes in type.sml for task 3 and 4}\end{figure}
+
 \newpage
+\section{Appendix F. Compiler.sml}
+
+\begin{figure}[h]
+\begin{lstlisting}
+| compileExp( vtable, Times (e1, e2, _), place ) =
+    let val t1 = "times1_" ^ newName()
+        val c1 = compileExp(vtable, e1, t1)
+        val t2 = "times2_" ^ newName()
+        val c2 = compileExp(vtable, e2, t2)
+    in c1 @ c2 @ [Mips.MUL (place,t1,t2)]
+    end
+
+| compileExp( vtable, Div (e1, e2, _), place ) =
+    let val t1 = "div1_" ^ newName()
+        val c1 = compileExp(vtable, e1, t1)
+        val t2 = "div2_" ^ newName()
+        val c2 = compileExp(vtable, e2, t2)
+    in c1 @ c2 @ [Mips.DIV (place,t1,t2)]
+    end
+
+| compileExp( vtable, Or(e1, e2, _), place ) =
+    let val t1 = "or1_" ^ newName()
+        val c1 = compileExp(vtable, e1, t1)
+        val t2 = "or2_" ^ newName()
+        val c2 = compileExp(vtable, e2, t2)
+        val lA = "_or_" ^ newName()
+    in 
+        c1 @ c2 @ [Mips.OR (place,t1,t2)]
+    end
+        
+| compileExp( vtable, Not(e1, _), place ) =
+    let val t1 = "not1_" ^ newName()
+        val c1 = compileExp(vtable, e1, t1)
+        val lA = "_not_" ^ newName()
+    in 
+        c1 @ [Mips.XORI (place,t1,"1")]
+    end
+\end{lstlisting}
+\caption{The compiler.sml changes for task 2}\end{figure}
+
+\begin{figure}[h]
 \begin{lstlisting}
 | compileLVal( vtab : VTab, Index ((n,t),inds) : LVAL, pos : Pos ) =
     ( case SymTab.lookup n vtab of
@@ -578,15 +713,16 @@ fun compile arg path =
                   n+4,l)  
                 end
 
-
-            (* If basic type size is k, returns log2(k) 
-	      (easier to calc later) *)
+            (* If basic type size is k, returns log2(k) (easier to calc later) *)
             fun element_size w = (case w of 
                 (Array(a,Int)) => "2" 
               | (Array(a,Bool)) => "0" 
               | (Array(a,Char)) => "0"
               | _ => raise Error("Impossible!!!, ", pos))
-
+\end{lstlisting}
+\caption{Compiler.sml for Task 4}\end{figure}
+\begin{figure}[h]
+\begin{lstlisting}
             (* Initiates variables *)
             val init_code =
                 [Mips.ADDI (arrptr, mem, "0"),
@@ -620,7 +756,10 @@ fun compile arg path =
 		(* points to next dim *)
                  Mips.ADDI (ctr, ctr, "-1"),
                  Mips.BNE (ctr, "0", calc_name)]
-
+\end{lstlisting}
+\caption{Compiler.sml task 4}\end{figure}
+\begin{figure}[h]
+\begin{lstlisting}
             (* Calculates the address of the array index *)
             val get_address =
                 [Mips.ADD(arrptr, arrptr, str_sz),      
@@ -635,68 +774,47 @@ fun compile arg path =
              get_address,
              Mem arrptr)
           end    
-
 \end{lstlisting}
-\newpage
+\caption{Compiler.sml task 4}\end{figure}
+
+\begin{figure}[h]
 \begin{lstlisting}
-(*
-                                   xx,
-                                  xxxx;
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx     xxx     xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
- xxxxxxxxxxxxxxxxxxxxxxxxxxxx,   ;xxx;   .xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  xxxxxxxxxxxxxxxxxxxxxxxxxxxx   xxxxx   xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-   `xxxxxxxxxxxxxxxxxxxxxxxxxxx..xxxxx..xxxxxxxxxxxxxxxxxxxxxxxxxxx`
-     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-       ^xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx~
-                         `xxxxxxxxxxxxxxxxxxxx
-                          `xxxxxxxxxxxxxxxxx~
-                            `xxxxxxxxxxxxx~
-                                xxxxxxx
-                                 xx xx
-                                 x   x
-*)
-let val new_vtab = bindTypeIds(fargs, aargs, fid, pdcl, pcall)
-    val res  = execBlock( body, new_vtab, ftab )
-in  ( case (rtp, res) of
-        (NONE , _) =>
-        let 
-            fun call_args [] [] = NONE
-              | call_args (x::xs) (y::ys) =
-                  let 
-                    val hitler = updateOuterVtable vtab new_vtab (x, y)
-                  in
-                    call_args xs ys
-                  end
-              | call_args _ _ = raise Error("Number of functions args does not match declaration, at ", pdcl)
-        in 
-            call_args aexps fargs  
-        end
+(* Swap temporary registers with caller registers, after
+   the procedure has finished *)
+and popArgs (TpAbSyn.LValue(lval, pos)::es) vtable 
+             reg ((Mips.ORI(rd, rs, v))::ts) =
+      let 
+          val code = popArgs es vtable (reg+1) ts
+      in  
+          code @ [Mips.MOVE (rs, makeConst reg)]
+      end
+  | popArgs (e::es) vtable reg (t::ts) = popArgs (e::es) vtable reg ts 
+(* if expression has more than 1 mips command, we want to pass the same
+ expression along again. *)
+  | popArgs _ vtable reg [] = []
+  | popArgs [] vtable reg _ = []
+
+| ProcCall ((n,_), es, p) => 
+  let
+      val (mvcode, maxreg) = putArgs es vtable minReg
+      val prod_codes = popArgs es vtable minReg mvcode
+      val new_mvcode = mvcode
+          @ [Mips.JAL (n, List.tabulate (maxreg, fn reg => makeConst reg))]
+          @ prod_codes
+  in
+      new_mvcode
+  end
+
+val new_argcode = 
+    if isProc andalso (not (fname = "main")) 
+    then map (fn (vname, reg) => Mips.MOVE (reg, vname)) movePairs
+    else []
+val body = compileStmts block vtable (fname ^ "_exit")
+val (body1, _, maxr, spilled) =  (* call register allocator *)
+   RegAlloc.registerAlloc ( argcode @ body @ new_argcode )
 \end{lstlisting}
-\newpage
-\begin{lstlisting}
-and updateOuterVtable vtabOuter vtabInner (TpAbSyn.LValue (lval1, pos1), 
-					   TpAbSyn.Dec ((id2,tp), pos2)) 
-								      = 
-     let val lenin = (case lval1 of 
-                Var(id,tp) => id
-              | Index((id,tp),e) => id)
-     in
-         case (SymTab.lookup lenin vtabOuter, 
-	       SymTab.lookup id2 vtabInner) of
-              (SOME x, SOME y) => x := !y
-             | _               => raise Error("Procedure argument " ^
-					      "not in caller", pos1)
-     end
- | updateOuterVtable _ _ _ = ()
-
-\end{lstlisting}
-
-
-
-
-
+\caption{Compiler.sml task 5}
+\end{figure}
 
 
 
