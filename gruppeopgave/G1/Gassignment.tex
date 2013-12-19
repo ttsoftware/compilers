@@ -136,9 +136,13 @@ The last step for the full implementation of multiplication, division, or and no
 In this task we were to implement typechecking for Paladims library functions read() and new()
 
 \subsection{Type.sml}
-The major change in the task was modifying the typeCheckExp function, to correctly typecheck the functions $read$ and $new$. In order to accomplish this, the typechecker needs to determine the expected type of the argument calling context. In the majority of the cases we changed from UnknownType to KnownType (<expected type>). E.g. in Plus, the expected type of the operands are now KnownType (BType Int) since Plus is only defined for integers (ie. the operator is typed). \\
+The major change in the task was modifying the typeCheckExp function, to correctly typecheck the functions $read$ and $new$. \\
 
-Two operations differ from this; Less and Equal, these two still holds UnkownType for argument1 but here the second argument is the same as what the 1. argument turns out to be. This is due to the fact that they are polymorphic. Even though they are polymorphic, the types of both arguments needs to be equal. We cannot infer exactly what types, but only that they must be equal (as suggested in the assignment description, we have only implemented this so it works one-way).\footnote{See Appendix E. Type.sml Listing 10, 11 and 12.}
+In order to accomplish type checking for $read$, the typechecker needs to determine the expected type of the argument calling context. In the majority of the cases we changed from UnknownType to KnownType (<expected type>). E.g. in Plus, the expected type of the operands are now KnownType (BType Int) since Plus is only defined for integers (ie. the operator is typed). \\
+Two operations differ from this; Less and Equal, these two still holds UnkownType for argument1 but here the second argument is the same as what the 1. argument turns out to be. This is due to the fact that they are polymorphic. Even though they are polymorphic, the types of both arguments needs to be equal. We cannot infer exactly what types, but only that they must be equal (as suggested in the assignment description, we have only implemented this so it works one-way).\\
+
+In order to accomplish type checking for $new$, the typechecker raises an error if not all the arguments are integers. Otherwise it creates a typed FunApp with the arguments (dimensions of the new array) converted to TpAbSyn.Type as well. 
+\footnote{See Appendix E. Type.sml Listing 10, 11 and 12.}
 \newpage
 \section{Task 4}
 In this task we were to implement type checking and code generation for array indexing. 
