@@ -1,0 +1,719 @@
+\documentclass[12pt,a4paper,english]{article}
+\usepackage [utf8]{inputenc}
+\usepackage [english]{babel}
+\usepackage [T1]{fontenc}
+\usepackage {amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage [top=3.4cm, bottom=2cm, left=3cm, right=3cm] {geometry}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{pgfkeys}
+\titleformat{\section}[block]{\Large\bfseries\filcenter}{}{1em}{}
+\titleformat{\subsection}[hang]{\bfseries\filcenter}{}{1em}{}
+\setcounter{secnumdepth}{0}
+\usepackage{pgfgantt}
+\setcounter{tocdepth}{3}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usetikzlibrary{positioning,shapes, shadows, arrows}\usepackage{tikz}
+\usepackage{url}
+\linespread{1.2}
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\fancyhead[L]{Paladim Assignment}
+\fancyhead[C]{}
+\fancyhead[R]{December 20 2013}
+\usepackage{listings}
+\lstset{moredelim=[s][\color{gray}]{(*}{*)}}
+\lstset{moredelim=[s][\color{green!50!brown}]{"}{"}}
+\lstset{moredelim=[s][\color{gray}]{/*}{*/}}
+\lstset{emph={char,int,bool,string,array,Bool,Int,Char,Array,String},emphstyle=\color{yellow!50!brown},
+	  emph={[2]NONE,SOME},emphstyle={[2]\color{orange}},
+	  emph={[3]let,fun,map,val,in,case,of,end,and,token,type,nonassoc,right,left,start,handle,if,then,else,andalso,orelse},emphstyle={[3]\color{brown}},
+	  emph={[4]call_args,hitler,updateOuterVtable,lenin,evalExp,
+	  evalOr,evalBinop,evalNot,print, compileExp, pp_exp, typeOfExp, posOfExp, Times, Div, Or, Not,pp_type,typeCheckExp,Mips},emphstyle={[4]\color{blue}},
+	  emph={[5]},emphstyle={[5]\color{orange!50!red}}}
+
+
+\begin{document}
+
+\begin{titlepage}
+    \vspace*{\fill}
+    \begin{center}
+      {\Huge Paladim Compiler}\\[0.7cm]
+      {\large Alexander Worm Olsen - bdj816}\\[0.4cm]
+      {\large Chi Dan Pham - vqr853}\\[0.4cm]
+      {\large Troels Thompsen - qvw203}\\[0.4cm]
+      {\small Group Project}\\[0.3cm]
+      {\small December 20 2013}\\[0.3cm] 
+      {\small Departmen of Computer Science}\\
+      {\small University of Copenhagen}
+    \end{center}
+    \vspace*{\fill}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+\section{Introduction}
+
+\begin{lstlisting}
+in  ( case (rtp, res) of
+      (NONE , _) =>
+           let 
+             fun call_args [] [] = NONE
+               | call_args (x::xs) (y::ys) =
+                 let 
+                   val hitler = updateOuterVtable vtab new_vtab (x, y)
+                 in
+                   call_args xs ys
+                 end
+               | call_args _ _ = raise Error
+				       ("Number of functions " ^ 
+			                "args does not match " ^ 
+				        "declaration, at ", pdcl)
+                 in 
+                   call_args aexps fargs  
+                 end
+\end{lstlisting}
+
+\begin{lstlisting}
+and updateOuterVtable vtabOuter vtabInner 
+                     (TpAbSyn.LValue (lval1, pos1), 
+	              TpAbSyn.Dec ((id2,tp), pos2)) = 
+    let 
+      val lenin = ( case lval1 of 
+                    Var(id,tp) => id
+                  | Index((id,tp),e) => id)
+    in
+      case (SymTab.lookup lenin vtabOuter, 
+            SymTab.lookup id2 vtabInner) of
+      (SOME x, SOME y) => x := !y
+      | _              => raise Error("Procedure argument " ^ 
+				      "not in caller", pos1)
+    end
+|   updateOuterVtable _ _ _ = raise Fail("Internal type error, " ^ 
+                                         "see updateOuterVtable. \n")
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+  | evalExp ( Div(e1, e2, pos), vtab, ftab ) =
+        let val res1   = evalExp(e1, vtab, ftab)
+            val res2   = evalExp(e2, vtab, ftab)
+        in  evalBinop(op div, res1, res2, pos)
+        end
+
+  | evalExp ( Times(e1, e2, pos), vtab, ftab ) =
+        let val res1   = evalExp(e1, vtab, ftab)
+            val res2   = evalExp(e2, vtab, ftab)
+        in  evalBinop(op *, res1, res2, pos)
+        end
+
+  | evalExp ( Or(e1, e2, pos), vtab, ftab ) =
+        let val r1 = evalExp(e1, vtab, ftab)
+            val r2 = evalExp(e2, vtab, ftab)
+  	in  evalOr(r1, r2, pos)
+  	end
+    
+  | evalExp ( Not(e1, pos), vtab, ftab ) =
+        let val r1 = evalExp(e1, vtab, ftab)
+        in  evalNot(r1, pos)
+        end
+
+fun evalOr  (BVal (Log b1), BVal (Log b2), pos) = 
+	     BVal (Log (b1 orelse b2))
+  | evalOr  (v1, v2, pos) =
+        raise Error( "Or: argument types do not match. Arg1: " ^
+                      pp_val v1 ^ ", arg2: " ^ pp_val v2, pos )
+                      
+fun evalNot  (BVal (Log b1), pos) = BVal (Log (not b1))
+  | evalNot  (v1, pos) =
+        raise Error( "Not: argument types do not match. Arg1: " ^
+                      pp_val v1, pos )
+\end{lstlisting}
+
+\newpage
+\begin{lstlisting}
+%{ 
+   
+%}
+
+/* Token type definitions (will often be used in the Lexer)
+ * Tokens use position attribute for demonstration 
+ * (see below for Lexer)
+ * As mentioned, the SML code above ends up after
+ * this data declaration,
+ * so we cannot use any types defined above
+ * at this point of the file.
+ * tokens needs to be of sml types
+ * through the rules the should be converted to an absyn syntaxtree */
+
+%token <AbSyn.Pos> TProgram TFunction TProcedure TVar TBegin TEnd 
+		   TIf TThen TElse TWhile TDo TReturn TArray TOf 
+		   TInt TBool TChar TAnd TOr TNot TAssign TPlus TMinus 
+		   TTimes TSlash TEq TLess TLParen TRParen TLBracket 
+		   TRBracket TLCurly TRCurly TComma TSemi TColon TEOF
+%token <bool*AbSyn.Pos> TBLit
+%token <int*AbSyn.Pos> TNLit
+%token <char*AbSyn.Pos> TCLit
+%token <string*AbSyn.Pos> TSLit TId
+
+%nonassoc LowPrec
+%nonassoc TElse
+%right TOr
+%right TAnd
+%nonassoc TNot
+%nonassoc TEq TLess
+%left TPlus TMinus
+%left TTimes TSlash
+
+/* start symbol */
+%start Program
+
+/* types returned by rules below */
+%type <AbSyn.Prog> Program
+%type <AbSyn.Prog> Prog
+%type <AbSyn.Prog> FunDecs
+%type <AbSyn.FunDec> FunDec
+%type <AbSyn.StmtBlock> Block 
+%type <AbSyn.Stmt list> SBlock
+%type <AbSyn.Stmt list> StmtSeq
+%type <AbSyn.Stmt> Stmt
+%type <AbSyn.LVAL*AbSyn.Pos> LVal
+%type <AbSyn.Exp option> Ret
+%type <AbSyn.Exp> Exp
+%type <AbSyn.Dec list> PDecl Params
+%type <AbSyn.Dec> Dec
+%type <AbSyn.Dec list> Decs
+%type <AbSyn.Type> Type
+%type <AbSyn.Exp list> CallParams Exps
+
+%%
+
+/* rules - a separate start rule is added automatically */
+
+/* PROGRAM STRUCTURE*/
+Program: Prog TEOF                 { $1 } 
+;
+
+Prog : 
+    TProgram TId TSemi FunDecs     { $4 }
+;
+
+FunDecs :
+    FunDecs FunDec                 { $1 @ [$2] }
+  | FunDec                         { [$1] }
+;
+
+FunDec :
+    TFunction TId TLParen PDecl TRParen TColon Type Block TSemi
+                                   { AbSyn.Func($7, #1 $2, $4, $8, $1) }
+  | TProcedure TId TLParen PDecl TRParen Block TSemi
+                                   { AbSyn.Proc(#1 $2, $4, $6, $1) }
+;
+
+Block :
+    SBlock                         { AbSyn.Block ([], $1) }
+  | TVar Decs SBlock               { AbSyn.Block ($2, $3) }
+;
+
+SBlock :
+    TBegin StmtSeq TSemi TEnd      { $2 }
+  | Stmt                           { [$1] }
+;
+
+StmtSeq :
+    StmtSeq TSemi Stmt             { $1 @ [$3] }
+  | Stmt                           { [$1] }
+;
+
+/* STATEMENTS */
+Stmt :
+    TId TLParen CallParams TRParen { AbSyn.ProcCall (#1 $1, $3, #2 $1) }
+  | TIf Exp TThen Block TElse Block{ AbSyn.IfThEl ($2, $4, $6, $1) }
+  | TIf Exp TThen Block %prec LowPrec 
+			           { AbSyn.IfThEl ($2, $4, 
+						   AbSyn.Block([],[]), 
+					    	   $1)}
+  /* prec gives precedence as LowPrec */
+  | TWhile Exp TDo Block           { AbSyn.While ($2, $4, $1) }
+  | TReturn Ret                    { AbSyn.Return ($2, $1) }
+  | LVal TAssign Exp               { AbSyn.Assign ($1, $3, $2) }
+;
+
+/* L-VALUES AND EXPRESSIONS */
+LVal :
+    TId                            { AbSyn.Var (#1 $1) }
+  | TId TLBracket Exps TRBracket   { AbSyn.Index (#1 $1, $3) }
+;
+
+Ret :
+    Exp                            { SOME $1 }
+  |                                { NONE }
+;
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+Exp :
+    TNLit                          { AbSyn.Literal (AbSyn.BVal(
+				     AbSyn.Num(#1 $1)), #2 $1) }
+  | TBLit                          { AbSyn.Literal (AbSyn.BVal(
+				     AbSyn.Log(#1 $1)), #2 $1) }
+  | TCLit                          { AbSyn.Literal (AbSyn.BVal(
+				     AbSyn.Chr(#1 $1)), #2 $1) } 
+  | TSLit                          { AbSyn.StrLit (#1 $1, #2 $1) }
+  | TLCurly Exps TRCurly           { AbSyn.ArrLit ($2,$1) }
+  | LVal                           { AbSyn.LValue (#1 $1, #2 $1) }
+  | TNot Exp                       { AbSyn.Not ($2, $1) }
+  | Exp TPlus Exp                  { AbSyn.Plus ($1, $3, $2) }
+  | Exp TMinus Exp                 { AbSyn.Minus ($1, $3, $2) }
+  | Exp TTimes Exp                 { AbSyn.Times ($1, $3, $2) }
+  | Exp TSlash Exp                 { AbSyn.Div ($1, $3, $2) }
+  | Exp TEq Exp                    { AbSyn.Equal ($1, $3, $2) }
+  | Exp TLess Exp                  { AbSyn.Less ($1, $3, $2) }
+  | Exp TAnd Exp                   { AbSyn.And ($1, $3, $2) }
+  | Exp TOr Exp                    { AbSyn.Or ($1, $3, $2) }
+  | TLParen Exp TRParen            { $2 }
+  | TId TLParen CallParams TRParen { AbSyn.FunApp (#1 $1, $3, # 2$1) }
+;
+
+/* VARIABLE AND PARAMETER DECLARATIONS, TYPES */
+PDecl : 
+    Params                         { $1 }
+  |                                { [] }
+;
+
+Params :
+    Params TSemi Dec               { $1 @ [$3] }
+  | Dec                            { [$1] }
+;
+
+Dec :
+    TId TColon Type                { AbSyn.Dec (#1 $1, $3, #2 $1) }
+;
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+Decs :
+    Decs Dec TSemi                 { $1 @ [$2] }
+  | Dec TSemi                      { [$1] }
+;
+
+Type :
+    TInt                           { AbSyn.Int ($1) }
+  | TChar                          { AbSyn.Char ($1) }
+  | TBool                          { AbSyn.Bool ($1) }
+  | TArray TOf Type                { AbSyn.Array ($3,$1) }
+;
+
+/* FUNCTION AND PROCEDURE PARAMETERS AND INDEX LISTS */
+CallParams :
+    Exps                           { $1 }
+  |                                { [] }
+;
+
+Exps :
+    Exp TComma Exps                { $1 :: $3 }
+  | Exp                            { [$1] }
+
+%%
+
+(* SML trailer *)
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+fun compile arg path =
+  let
+    val inpath = path
+    val outpath= Path.base path ^ ".asm"
+    val lexbuf = createLexerStream (BasicIO.open_in inpath)
+  in
+    let
+      (*val pgm = LL1Parser.parse Lexer.Token lexbuf*)
+      (* COMMENT LINE ABOVE AND UNCOMMENT  *)
+      (* THE LINE BELOW TO USE YOUR PARSER *)
+      val pgm = Parser.Program Lexer.Token lexbuf
+    in case arg of
+      "-ti" => typedInterpret (typeCheck pgm)
+    | "-c"  => compileNormal pgm outpath
+    | other => print ("'" ^ other ^ "': Unknown mode of operation.\n")
+    end
+    handle
+      Parsing.yyexit ob => errorMsg "Parser-exit\n"
+    | Parsing.ParseError ob =>
+       (* errorMsgAt "Parsing error" (Lexer.getPos lexbuf) *)
+       (* COMMENT LINE ABOVE AND UNCOMMENT  *)
+       (* THE LINE BELOW TO USE YOUR PARSER *)
+         errorMsgAt "Parsing error" (Lexer.getPos lexbuf)
+
+   (* | Parser.ParseError s =>
+         errorMsgAt ("Parse error: " ^ s) (Lexer.getPos lexbuf) *)
+\end{lstlisting}
+
+\begin{lstlisting}
+| compileExp( vtable, Times (e1, e2, _), place ) =
+    let val t1 = "times1_" ^ newName()
+        val c1 = compileExp(vtable, e1, t1)
+        val t2 = "times2_" ^ newName()
+        val c2 = compileExp(vtable, e2, t2)
+    in c1 @ c2 @ [Mips.MUL (place,t1,t2)]
+    end
+
+| compileExp( vtable, Div (e1, e2, _), place ) =
+    let val t1 = "div1_" ^ newName()
+        val c1 = compileExp(vtable, e1, t1)
+        val t2 = "div2_" ^ newName()
+        val c2 = compileExp(vtable, e2, t2)
+    in c1 @ c2 @ [Mips.DIV (place,t1,t2)]
+    end
+\end{lstlisting}
+
+\begin{lstlisting}
+| compileExp( vtable, Or(e1, e2, _), place ) =
+    let val t1 = "or1_" ^ newName()
+        val c1 = compileExp(vtable, e1, t1)
+        val t2 = "or2_" ^ newName()
+        val c2 = compileExp(vtable, e2, t2)
+        val lA = "_or_" ^ newName()
+    in 
+        c1 @ c2 @ [Mips.OR (place,t1,t2)]
+    end
+        
+| compileExp( vtable, Not(e1, _), place ) =
+    let val t1 = "not1_" ^ newName()
+        val c1 = compileExp(vtable, e1, t1)
+        val lA = "_not_" ^ newName()
+    in 
+        c1 @ [Mips.XORI (place,t1,"1")]
+    end
+\end{lstlisting}
+
+\begin{lstlisting}
+| Times   of Exp * Exp         * Pos      (* e.g., x * 3 *)
+| Div     of Exp * Exp         * Pos      (* e.g., x / 3 *) 
+| Or      of Exp * Exp         * Pos      (* e.g., (x=5) or y *)
+| Not     of Exp               * Pos      (* e.g., not (x>3) *)
+
+| pp_exp (Or    (e1, e2, _))    = "( " ^ pp_exp e1 ^ " | " ^ pp_exp e2 ^ " )"
+| pp_exp (Not   (e1,     _))    = "( not " ^ pp_exp e1 ^ " )"
+| pp_exp (Times (e1, e2, _))    = "( " ^ pp_exp e1 ^ " * " ^ pp_exp e2 ^ " )"
+| pp_exp (Div   (e1, e2, _))    = "( " ^ pp_exp e1 ^ " / " ^ pp_exp e2 ^ " )"
+
+| typeOfExp ( Or     (_,_,_) ) = BType Bool
+| typeOfExp ( Not    (_,  _) ) = BType Bool
+| typeOfExp ( Times  (a,b,_) ) = typeOfExp a
+| typeOfExp ( Div    (a,b,_) ) = typeOfExp a
+
+| posOfExp  ( Or     (_,_,p) ) = p
+| posOfExp  ( Not    (_,  p) ) = p
+| posOfExp  ( Times  (_,_,p) ) = p
+| posOfExp  ( Div    (_,_,p) ) = p
+
+\end{lstlisting}
+
+\begin{lstlisting}
+(* Must be modified to complete task 3 *)
+| typeCheckExp( vtab, AbSyn.Div (e1, e2, pos), _ ) =
+   let val e1_new = typeCheckExp(vtab, e1, KnownType (BType Int) )
+        val e2_new = typeCheckExp(vtab, e2, KnownType (BType Int) )
+        val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
+   in  if  typesEqual(BType Int, tp1) andalso 
+            typesEqual(BType Int, tp2)
+        then Div(e1_new, e2_new, pos)
+        else raise Error("in type check minus exp, one argument " ^
+			 "is not of int type "^ pp_type tp1^
+			 " and "^pp_type tp2^" at ", pos)
+   end
+          
+(* Must be modified to complete task 3 *)
+| typeCheckExp ( vtab, AbSyn.Equal(e1, e2, pos), _ ) =
+  let val e1_new = typeCheckExp(vtab, e1, UnknownType)
+      val e2_new = typeCheckExp(vtab, e2, 
+		   		KnownType (typeOfExp e1_new) )
+      val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
+      (* check that tp1 is not an array type *)
+      val () = case tp1 of
+               Array _ => raise Error("in type check equal, " ^
+				      "first expression " ^
+				      pp_exp e1_new ^
+                                      "is an array (of type) " ^
+				      pp_type tp1 ^ " at ", pos)
+                   | _ => ()
+  in  if  typesEqual(tp1, tp2)
+      then Equal(e1_new, e2_new, pos)
+      else raise Error("in type check equal exp, " ^
+		       " argument types do not match " ^
+                       pp_type tp1^" <> "^pp_type tp2^" at ", pos)
+  end
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+(* Must be modified to complete task 3 *)
+| typeCheckExp ( vtab, AbSyn.Less (e1, e2, pos), _ ) =
+    let val e1_new = typeCheckExp(vtab, e1, KnownType (BType Int) )
+        val e2_new = typeCheckExp(vtab, e2, KnownType (BType Int) )
+        val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
+        (* check that tp1 is not an array type *)
+        val () = case tp1 of
+                   Array _ => raise Error("in type check less, " ^
+					  "first expression "^ 
+					  pp_exp e1_new ^
+                                          "is an array (of type) " ^
+					  pp_type tp1^" at ", pos)
+                       | _ => ()
+    in  if  typesEqual(tp1, tp2)
+        then Less(e1_new, e2_new, pos)
+        else raise Error("in type check less exp, argument types " ^
+			 " do not match "^
+                         pp_type tp1^" <> "^pp_type tp2^" at ", pos)
+    end
+
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+(* Must be modified to complete task 3 *)
+| typeCheckExp ( vtab, AbSyn.Or (e1, e2, pos), _ ) =
+    let val e1_new = typeCheckExp(vtab, e1, KnownType (BType Bool) )
+        val e2_new = typeCheckExp(vtab, e2, KnownType (BType Bool) )
+        val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
+    in  if  typesEqual(BType Bool, tp1) andalso 
+	    typesEqual(BType Bool, tp2)
+        then Or(e1_new, e2_new, pos)
+        else raise Error("in type check and exp, one argument is " ^ 
+			 "not of bool type "^
+                           pp_type tp1^" and "^pp_type tp2^" at ", pos)
+    end    
+
+(* Must be modified to complete task 3 *)
+| typeCheckExp ( vtab, AbSyn.Not (e1, pos), _ ) =
+    let val e1_new = typeCheckExp(vtab, e1, KnownType (BType Bool) )
+        val (tp1) = (typeOfExp e1_new)
+    in  if  typesEqual(BType Bool, tp1)
+        then Not(e1_new, pos)
+        else raise Error("in type check and exp, one argument is not " ^
+			 "of bool type " ^
+                            pp_type tp1^" at ", pos)
+    end   
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+(* function call to `new' uses expected type to infer
+   the to-be-read result *)
+| typeCheckExp ( vtab, AbSyn.FunApp ("new", args, pos), etp ) =
+    ( case expectedBasicType etp of
+        SOME btp => 
+          let 
+            val typedargs = map (fn n => 
+		      typeCheckExp(vtab, n,KnownType (BType Int))) args
+            val types = map typeOfExp typedargs
+            val rtp = Array ( length args, btp)
+          in
+            if List.all (fn n => typesEqual(BType Int, n)) types
+            then 
+              FunApp(("new", (types, SOME rtp)), typedargs,pos)
+            else 
+              raise Error("declared array dimensions are not " ^
+			  "integers, at ", pos)
+          end
+\end{lstlisting}
+
+\begin{lstlisting}
+| typeCheckExp( vtab, AbSyn.LValue( AbSyn.Index(id, inds), pos ), _ ) =
+    let
+       val indices = length inds
+       val newinds = map (fn n=>
+			typeCheckExp(vtab,n,KnownType (BType Int))) inds
+       val correctinds = List.all (fn n => 
+			typesEqual(BType Int, typeOfExp n)) newinds
+    in
+       case SymTab.lookup id vtab of
+          SOME (Array(r,t)) => 
+             if indices > 0 andalso r = length inds andalso correctinds 
+             then
+               LValue(Index((id,Array(r,t)),newinds),pos)
+             else
+               raise Error("ill-formed array indexing at ",pos)
+        | _ => raise Error("in type check variable, var " 
+			   ^id^"not in VTab, at",pos)
+    end
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+| compileLVal( vtab : VTab, Index ((n,t),inds) : LVAL, pos : Pos ) =
+    ( case SymTab.lookup n vtab of
+        SOME mem => 
+          let
+            val rank = length inds
+            val strides = 4 * (rank - 1)
+                
+            (* Variables for generated MIPS code *)
+            val arrptr = "_arrptr_" ^ newName() 
+		(* pointer to a *)
+            val ind_reg = "_indx_" ^ newName() 
+		(* current index i_k *)
+            val dim_reg = "_dimx_" ^ newName() 
+		(* current dimension d_k *)
+            val flat = "_flatIndx_" ^ newName() 
+		(* flat index value *)
+            val ctr = "_ctr_" ^ newName() 
+		(* loop counter (init to rank) *)
+            val tmp = "_tmp_" ^ newName() 
+		(* tmp register to check bounds *)
+            val calc_name = "_calc_and_check_" ^ newName() 
+		(* label name for loop *)
+            val str_sz = "_strides_" ^newName() 
+		(* Number of strides (to skip) *)
+
+            (* Generates code for adding the indices to the stack *)
+            fun copy_to_stack ([],code,n,l) = 
+			   (Mips.ADDI(SP,SP, makeConst(~4*l)))::code 
+              | copy_to_stack (i::inds,code,n,l) = 
+                let 
+                  val temp = "_temp_"^newName()
+                in
+                  copy_to_stack(inds, 
+                    code @ (compileExp(vtab, i, temp)) @
+                    [Mips.ADD (ind_reg, "0", temp),
+                     Mips.SW (ind_reg, SP, makeConst n)], 
+                  n+4,l)  
+                end
+
+
+            (* If basic type size is k, returns log2(k) 
+	      (easier to calc later) *)
+            fun element_size w = (case w of 
+                (Array(a,Int)) => "2" 
+              | (Array(a,Bool)) => "0" 
+              | (Array(a,Char)) => "0"
+              | _ => raise Error("Impossible!!!, ", pos))
+
+            (* Initiates variables *)
+            val init_code =
+                [Mips.ADDI (arrptr, mem, "0"),
+                 Mips.ADDI (ind_reg, "0", "0"),
+                 Mips.ADDI (flat, "0", "0"),
+                 Mips.ADDI (ctr, "0", makeConst rank),
+                 Mips.ADDI (str_sz, "0", makeConst strides)]
+
+            (* Checks if array index is out of bounds *)
+            val calc_out_of_bounds =
+                [Mips.SUB (tmp, dim_reg, ind_reg),
+                 Mips.SLT (dim_reg, dim_reg, tmp),
+                 Mips.SLTI (tmp, tmp, "1"),
+                 Mips.OR (tmp, tmp, dim_reg),
+                 Mips.BNE (tmp, "0", "_IllegalArrIndexError_")]
+
+            (* Loop: checks if each index is within bounds 
+	       and calculates flat index *)
+            val calc_and_check =
+                [Mips.LABEL (calc_name),
+                 Mips.LW (dim_reg, arrptr, "0"),    
+		(* loads current dim *)
+                 Mips.MUL (flat, flat, dim_reg), 
+                 Mips.LW (ind_reg, SP, "0")]        
+		(* loads current index *)
+                 @ calc_out_of_bounds @
+                [Mips.ADD (flat, flat, ind_reg), 
+                 Mips.ADDI (arrptr, arrptr, "4"),   
+		(* points to next index *)
+                 Mips.ADDI (SP, SP, "4"),           
+		(* points to next dim *)
+                 Mips.ADDI (ctr, ctr, "-1"),
+                 Mips.BNE (ctr, "0", calc_name)]
+
+            (* Calculates the address of the array index *)
+            val get_address =
+                [Mips.ADD(arrptr, arrptr, str_sz),      
+		 (* skip the strides *)
+                 Mips.LW(arrptr,arrptr,"0"),
+                 Mips.SLL (flat, flat, element_size t),
+                 Mips.ADD (arrptr, arrptr, flat)]
+          in
+            (copy_to_stack(inds,[],0,rank) @
+             init_code @
+             calc_and_check @
+             get_address,
+             Mem arrptr)
+          end    
+
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+(*
+                                   xx,
+                                  xxxx;
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxx     xxx     xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxxxxxxxxxxxx,   ;xxx;   .xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxx   xxxxx   xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   `xxxxxxxxxxxxxxxxxxxxxxxxxxx..xxxxx..xxxxxxxxxxxxxxxxxxxxxxxxxxx`
+     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+       ^xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx~
+                         `xxxxxxxxxxxxxxxxxxxx
+                          `xxxxxxxxxxxxxxxxx~
+                            `xxxxxxxxxxxxx~
+                                xxxxxxx
+                                 xx xx
+                                 x   x
+*)
+let val new_vtab = bindTypeIds(fargs, aargs, fid, pdcl, pcall)
+    val res  = execBlock( body, new_vtab, ftab )
+in  ( case (rtp, res) of
+        (NONE , _) =>
+        let 
+            fun call_args [] [] = NONE
+              | call_args (x::xs) (y::ys) =
+                  let 
+                    val hitler = updateOuterVtable vtab new_vtab (x, y)
+                  in
+                    call_args xs ys
+                  end
+              | call_args _ _ = raise Error("Number of functions args does not match declaration, at ", pdcl)
+        in 
+            call_args aexps fargs  
+        end
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+and updateOuterVtable vtabOuter vtabInner (TpAbSyn.LValue (lval1, pos1), 
+					   TpAbSyn.Dec ((id2,tp), pos2)) 
+								      = 
+     let val lenin = (case lval1 of 
+                Var(id,tp) => id
+              | Index((id,tp),e) => id)
+     in
+         case (SymTab.lookup lenin vtabOuter, 
+	       SymTab.lookup id2 vtabInner) of
+              (SOME x, SOME y) => x := !y
+             | _               => raise Error("Procedure argument " ^
+					      "not in caller", pos1)
+     end
+ | updateOuterVtable _ _ _ = ()
+
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
