@@ -450,7 +450,7 @@ struct
         in  
             code @ [Mips.MOVE (rs, makeConst reg)]
         end
-    | popArgs (e::es) vtable reg (t::ts) = popArgs (e::es) vtable reg ts
+    | popArgs (e::es) vtable reg (t::ts) = popArgs (e::es) vtable reg ts (* if expression has more than 1 mips command, we want to pass the same expression along again. *)
     | popArgs _ vtable reg [] = []
     | popArgs [] vtable reg _ = []
 
