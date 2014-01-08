@@ -444,15 +444,19 @@ struct
       end
 
   (* Swap temporary registers with caller registers, after the procedure has finished *)
-  and popArgs (TpAbSyn.LValue(lval, pos)::es) vtable reg ((Mips.ORI(rd, rs, v))::ts) =
+  and popArgs (TpAbSyn.LValue(Var(n,tp), pos)::es) vtable reg =
         let 
-            val code = popArgs es vtable (reg+1) ts
+            val valreg = 
+                (case SymTab.lookup n vtable of 
+                      SOME r => r
+                    | NONE     => raise Error ("unknown variable "^n, pos)
+                )
+            val code = popArgs es vtable (reg+1)
         in  
-            code @ [Mips.MOVE (rs, makeConst reg)]
+            code @ [Mips.MOVE(valreg, makeConst reg)]
         end
-    | popArgs (e::es) vtable reg (t::ts) = popArgs (e::es) vtable reg ts (* if expression has more than 1 mips command, we want to pass the same expression along again. *)
-    | popArgs _ vtable reg [] = []
-    | popArgs [] vtable reg _ = []
+    | popArgs (e::es) vtable reg = popArgs es vtable reg
+    | popArgs [] vtable reg = []
 
   and compileLVal( vtab : VTab, Var (n,_) : LVAL, pos : Pos ) : Mips.mips list * Location =
         ( case SymTab.lookup n vtab of
@@ -632,7 +636,7 @@ struct
         | ProcCall ((n,_), es, p) => 
           let
               val (mvcode, maxreg) = putArgs es vtable minReg
-              val prod_codes = popArgs es vtable minReg mvcode
+              val prod_codes = popArgs es vtable minReg
               val new_mvcode = mvcode
                   @ [Mips.JAL (n, List.tabulate (maxreg, fn reg => makeConst reg))]
                   @ prod_codes
