@@ -1,0 +1,5 @@
+Introduction to the Group ASsignment
+
+The goal of the group assignment is to implement a compiler for the Paladim language using a bottom-up grammar. The langauge we use for this implementation is Stanard ML.
+The majority of the compiler has already been implemented, and the changes we made are described in the individual tasks below. 
+The first two tasks of the assigment was completed as a milestone assignment. We have made slight changes since the milestone, which improves the work done in these two tasks. A full description of these tasks and all the changes we made, are also included here.

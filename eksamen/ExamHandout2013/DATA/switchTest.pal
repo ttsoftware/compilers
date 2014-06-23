@@ -1,0 +1,48 @@
+program switchTest;
+
+procedure main()
+var
+    i : int;
+    x : char;
+    y : bool;
+begin
+    i := read();
+    switch i:
+        case 0: write("is is 0!");
+        case 1: write("i is 1");
+        default: write("is neither 0 nor 1.");
+
+    write("\n");
+
+    switch true:
+        case true: write("true");
+        case false: write("false");
+        default: write("NO");
+
+    write("\n");
+
+    y := true;
+
+    switch y:
+        case true: write("true");
+        case false: write("false");
+        default: write("NO");
+
+    write("\n");
+
+    switch '1':
+        case '2': write("i is 2");
+        case '0': write("i is 0");
+        case '1': write("i is 1");
+        default: write("NO");
+
+    write("\n");
+    
+    x := '0';
+
+    switch x:
+        case '2': write("i is 2");
+        case '0': write("i is 0");
+        case '1': write("i is 1");
+        default: write("NO");
+end;

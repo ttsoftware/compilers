@@ -1,0 +1,51 @@
+program map;
+
+function f (x : int) : char
+begin
+    return chr(x);
+end; 
+
+function map(x : array of array of int) : array of array of char
+var
+    y : array of array of char;
+    i : int;
+    ii : int;
+    lenD1 : int;
+    lenD2 : int;
+begin
+    lenD1 := len(0,x);
+    lenD2 := len(1,x);
+    y := new(lenD1, lenD2);
+    i := 0;
+    ii := 0;
+    while (i < lenD1) do
+        begin
+            while (ii < lenD2) do
+                begin
+                    y[i, ii] := f(x[i, ii]);
+                    ii := ii+1;
+                end;
+            i := i+1;
+        end;
+    return y;
+end;
+
+procedure main()
+var
+    arr : array of array of int;
+    rarr : array of array of char;
+begin
+    arr := {
+            {1, 2},
+            {3, 4}
+        };
+    rarr := map(arr);
+    write(rarr[0, 0]);
+    write("\n");
+    write(rarr[0, 1]);
+    write("\n");
+    write(rarr[1, 0]);
+    write("\n");
+    write(rarr[1, 1]);
+    write("\n");
+end;
